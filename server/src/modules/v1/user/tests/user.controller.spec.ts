@@ -12,48 +12,52 @@ import { Message } from '../../message/message.entity'
 import { Conversation } from '../../conversation/conversation.entity'
 
 describe('UserController', () => {
-    let module: TestingModule
-    let service: UserService
-    let repository: UserRepository
-    let controller: UserController
+	let module: TestingModule
+	let service: UserService
+	let repository: UserRepository
+	let controller: UserController
 
-    beforeAll(async () => {
-        module = await Test.createTestingModule({
-            imports: [
-                ConfigModule.forRoot({
-                    isGlobal: true
-                }),
-                TypeOrmModule.forRootAsync(createTestConfiguration([User, Room, Message, Invitation, Conversation])),
-                TypeOrmModule.forFeature([User])
-            ],
-            controllers: [
-                UserController
-            ],
-            providers: [
-                UserService
-            ]
-        }).compile()
+	beforeAll(async () => {
+		module = await Test.createTestingModule({
+			imports: [
+				ConfigModule.forRoot({
+					isGlobal: true
+				}),
+				TypeOrmModule.forRootAsync(
+					createTestConfiguration([
+						User,
+						Room,
+						Message,
+						Invitation,
+						Conversation
+					])
+				),
+				TypeOrmModule.forFeature([User])
+			],
+			controllers: [UserController],
+			providers: [UserService]
+		}).compile()
 
-        controller = module.get<UserController>(UserController)
-        service = module.get<UserService>(UserService)
-        repository = module.get<UserRepository>(getRepositoryToken(User))
-        await repository.query(`DELETE FROM "user"`)
-    })
+		controller = module.get<UserController>(UserController)
+		service = module.get<UserService>(UserService)
+		repository = module.get<UserRepository>(getRepositoryToken(User))
+		await repository.query(`DELETE FROM "user"`)
+	})
 
-    afterAll(async () => {
-        await repository.query(`DELETE FROM "user"`)
-        module.close()
-    })
+	afterAll(async () => {
+		await repository.query(`DELETE FROM "user"`)
+		module.close()
+	})
 
-    it('Should be defined', () => {
-        expect(module).toBeDefined()
-    })
+	it('Should be defined', () => {
+		expect(module).toBeDefined()
+	})
 
-    it('Should be defined', () => {
-        expect(controller).toBeDefined()
-    })
+	it('Should be defined', () => {
+		expect(controller).toBeDefined()
+	})
 
-    it('Should be defined', () => {
-        expect(service).toBeDefined()
-    })
+	it('Should be defined', () => {
+		expect(service).toBeDefined()
+	})
 })

@@ -7,41 +7,40 @@ import { Request } from 'express'
 import { UserService } from '../../../../modules/v1/user/user.service'
 
 export type JwtAccessPayload = {
-    id: string | number;
-    displayName: string 
+	id: string | number
+	displayName: string
 }
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy) {
-    
-    constructor(
-        configService: ConfigService,
-        private readonly userService: UserService
-    ) {
-        super({
-            jwtFromRequest: JwtAuthStrategy.extractJwtFromCookie,
-            ignoreExpiration: false,
-            secretOrKey: configService.get<string>('JWT_ACCESS_SECRET_KEY')
-        })
-    }
+	constructor(
+		configService: ConfigService,
+		private readonly userService: UserService
+	) {
+		super({
+			jwtFromRequest: JwtAuthStrategy.extractJwtFromCookie,
+			ignoreExpiration: false,
+			secretOrKey: configService.get<string>('JWT_ACCESS_SECRET_KEY')
+		})
+	}
 
-    static extractJwtFromCookie(req: Request) {
-        let token = null
+	static extractJwtFromCookie(req: Request) {
+		let token = null
 
-        if (req && req.cookies) {
-            token = req.cookies['access_token']
-        }
-        
-        return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req)
-    }
+		if (req && req.cookies) {
+			token = req.cookies['access_token']
+		}
 
-    async validate(payload: JwtAccessPayload) {
-        const user = await this.userService.getUserByField('id', payload.id)
+		return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req)
+	}
 
-        if (!user) {
-            throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
-        }
-        
-        return user
-    }
+	async validate(payload: JwtAccessPayload) {
+		const user = await this.userService.getUserByField('id', payload.id)
+
+		if (!user) {
+			throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED)
+		}
+
+		return user
+	}
 }
