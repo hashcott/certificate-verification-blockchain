@@ -2,19 +2,19 @@ import { Body, Controller, Patch, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { UserService } from './certification.service'
-import { CurrentUser, Verified as Status } from '../../../common/decorators'
-import { AccountStatus } from '../../../common/enums'
+import { CurrentUser, Roles } from '../../../common/decorators'
+import { Role } from '../../../common/enums'
 import { JwtAuthGuard, VerifiedGuard } from '../../../common/guards'
 import { UpdateUserDto } from '../../../common/dtos'
 
-@ApiTags('v1/user')
+@ApiTags('v1/certification')
 @Controller({
-	path: 'user',
+	path: 'certification',
 	version: '1'
 })
 export class UserController {
 	constructor(private readonly userService: UserService) {}
-	@Status(AccountStatus.VERIFIED)
+	@Roles(Role.MODERATOR)
 	@UseGuards(JwtAuthGuard, VerifiedGuard)
 	@Patch('update')
 	updateProfile(

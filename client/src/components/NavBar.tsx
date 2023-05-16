@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { AiOutlineMenu } from "react-icons/ai";
 
 import { authRoutes, themes } from "../utils/constants";
 import { Dispatch, RootState } from "../store/store";
@@ -33,7 +32,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
 	};
 	return (
 		<>
-			<nav className="sticky top-0 z-50 shadow-2xl bg-base-300 navbar">
+			<nav className="sticky top-0 z-50 shadow-xl navbar">
 				<div className="navbar-start">
 					<div className="dropdown">
 						<label tabIndex={0} className="btn btn-ghost lg:hidden">

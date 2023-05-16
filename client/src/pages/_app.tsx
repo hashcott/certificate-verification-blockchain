@@ -13,6 +13,7 @@ import { AuthProvider } from "../store/auth";
 import { Footer } from "../components/Footer";
 import { store } from "../store/store";
 import { NavBar } from "../components/NavBar";
+import { NavBarPublic } from "../components/NavBarPublic";
 
 const persistor = getPersistor();
 
@@ -30,9 +31,10 @@ const fetcher = async (url: string) => {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const { pathname } = useRouter();
-	const authRoutes = ["/login", "/account/password/reset"];
+	const authRoutes = ["/login", "/account/password/reset", "/"];
 	const authRoute = authRoutes.includes(pathname);
-
+	const publicRoutes = ["/"];
+	const publicRoute = publicRoutes.includes(pathname);
 	return (
 		<SWRConfig
 			value={{
@@ -46,9 +48,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 						<AuthProvider>
 							<IoProvider>
 								{!authRoute && <NavBar />}
+								{publicRoute && <NavBarPublic />}
+
 								<Component {...pageProps} />
-								{!authRoute ||
-									(pathname === "/chat" && <Footer />)}
+								{!authRoute || (pathname === "/" && <Footer />)}
 							</IoProvider>
 						</AuthProvider>
 					</PersistGate>

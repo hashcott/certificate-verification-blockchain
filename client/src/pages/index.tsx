@@ -1,34 +1,51 @@
-import Head from 'next/head'
+import Head from "next/head";
 
-import { Container } from '../components/Container'
+import { Container } from "../components/Container";
 
-
-interface IndexProps {
-
-}
+interface IndexProps {}
 
 const Index: React.FC<IndexProps> = ({}) => {
-    return (
-        <>
-            <Head>
-                <title>Nest Next Boilerplate</title>
-                <meta name="description" content="Welcome to Witq"/>
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Container>
-                <div>
-                    <h1 className="text-6xl">Hello world</h1>
-                    <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lorem orci, pretium id feugiat volutpat, finibus vulputate sapien. Donec ac odio et nisl lobortis consequat. Aliquam vel lectus non erat egestas commodo non a neque. Nulla tempus vestibulum nunc eget sagittis. Donec semper ipsum ac magna sollicitudin, vel egestas augue auctor. Phasellus eget ultricies diam. Nunc lobortis vulputate diam, et ultricies augue varius dictum. Vivamus quis sagittis dui. Vivamus venenatis ornare lacus non accumsan. Suspendisse urna ligula, sollicitudin ut semper ac, ultricies in justo. Nullam volutpat condimentum purus ut ultricies. Aliquam cursus velit sit amet sapien vulputate fringilla. Sed luctus ut leo mollis rhoncus. Nullam nec sapien odio. Nulla finibus turpis quam, quis euismod ligula iaculis a.
-                    </p>
-                    <br />
-                    <p>
-                    Vestibulum mattis viverra mi, at fermentum sem accumsan et. Suspendisse sagittis congue molestie. Praesent lobortis est ac risus rutrum efficitur. In a rhoncus ligula. Fusce efficitur, diam in ultricies suscipit, nunc turpis mattis tellus, ac rutrum sapien nisi nec urna. Nam fermentum lacinia nibh, at ultricies erat luctus ut. Suspendisse egestas risus vel condimentum sodales.
-                    </p>
-                </div>
-            </Container>
-        </>
-    )
-}
+	return (
+		<>
+			<Head>
+				<title>BlockCert</title>
+				<meta name="description" content="Welcome to BlockCert" />
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
+			<Container>
+				<div className="h-screen flex flex-col items-center justify-center">
+					<h1 className="-mt-28 text-6xl font-bold font-geomanist font-mono pb-12">
+						certs.io
+					</h1>
+					<div className="form-control">
+						<div className="input-group">
+							<input
+								type="text"
+								placeholder="Search…"
+								className="input input-bordered pr-40"
+							/>
+							<button className="btn btn-square btn-primary">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-6 w-6"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+									/>
+								</svg>
+							</button>
+						</div>
+					</div>
+				</div>
+			</Container>
+		</>
+	);
+};
 
-export default Index
+export default Index;

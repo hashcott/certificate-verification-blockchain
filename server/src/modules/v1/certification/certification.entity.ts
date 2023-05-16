@@ -1,13 +1,4 @@
-import { Exclude } from 'class-transformer'
-import {
-	BeforeInsert,
-	Column,
-	Entity,
-	Index,
-	ManyToMany,
-	OneToMany,
-	OneToOne
-} from 'typeorm'
+import { Column, Entity, Index, OneToMany, OneToOne } from 'typeorm'
 
 import { AbstractEntity, User } from '../../../common/entities'
 import { Providers, CertificationStatus } from '../../../common/enums'
@@ -30,15 +21,6 @@ export class Certification extends AbstractEntity<Certification> {
 	})
 	public providerId: string
 
-	@Index()
-	@Column({
-		unique: true,
-		length: 200,
-		name: 'name',
-		nullable: false
-	})
-	public email: string
-
 	@Column({
 		length: 200,
 		name: 'first_name',
@@ -54,14 +36,24 @@ export class Certification extends AbstractEntity<Certification> {
 	public lastName: string
 
 	@Column({
+		length: 200,
+		name: 'academicYear',
+		nullable: false
+	})
+	public academicYear: string
+
+	@Column({
 		name: 'certification_status',
 		nullable: false,
 		default: CertificationStatus.PENDING,
 		type: 'enum',
 		enum: CertificationStatus
 	})
-	public CertificationStatus: CertificationStatus
+	public certificationStatus: CertificationStatus
 
 	@OneToOne(() => User, (user) => user)
 	public user: User
+
+	@OneToMany(() => User, (user) => user)
+	public verifiedBy: User
 }
