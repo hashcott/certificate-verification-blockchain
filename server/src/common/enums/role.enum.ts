@@ -1,6 +1,14 @@
 export enum Role {
 	USER = 'user',
-	PREMIUM = 'premium',
 	MODERATOR = 'moderator',
 	ADMIN = 'admin'
+}
+
+export enum POSITION {
+	KHOA = 'khoa',
+	DAOTAO = 'daotao',
+	TAIVU = 'taivu',
+	ADMIN = 'admin',
+	THUVIEN = 'thuvien',
+	KTX = 'ktx'
 }

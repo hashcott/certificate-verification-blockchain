@@ -20,25 +20,19 @@ import {
 import { Request, Response } from 'express'
 import { SkipThrottle } from '@nestjs/throttler'
 
-import { AuthRequest, AuthService } from './auth.service'
+import { AuthService } from './auth.service'
 import {
 	CreateAccountDto,
 	LoginDto,
 	PasswordValuesDto
 } from '../../../common/dtos'
-import {
-	RolesGuard,
-	VerifiedGuard,
-	FacebookOauthGuard,
-	GoogleOauthGuard,
-	JwtAuthGuard
-} from '../../../common/guards'
+import { RolesGuard, VerifiedGuard, JwtAuthGuard } from '../../../common/guards'
 import {
 	Roles,
 	CurrentUser,
 	Verified as Status
 } from '../../../common/decorators'
-import { Providers, Role, AccountStatus } from '../../../common/enums'
+import { Role, AccountStatus } from '../../../common/enums'
 import { User } from '../../../common/entities'
 
 @ApiTags('v1/auth')
@@ -74,45 +68,6 @@ export class AuthController {
 	@UseGuards(JwtAuthGuard)
 	async logout(@Req() req: Request) {
 		return this.authService.logout(req)
-	}
-
-	@ApiOkResponse({
-		description:
-			'Basic URL to initiate Google Strategy (NOT WORKING IN SWAGGER)'
-	})
-	@Get('google')
-	@UseGuards(GoogleOauthGuard)
-	async googleAuth(@Req() _req: Request) {
-		// Guard redirects
-	}
-
-	@ApiOkResponse({
-		description: 'Redirect URL for Google Strategy (NOT WORKING IN SWAGGER)'
-	})
-	@Get('google/redirect')
-	@UseGuards(GoogleOauthGuard)
-	async googleAuthRedirect(@Req() req: AuthRequest, @Res() _res: Response) {
-		return this.authService.socialProviderLogin(req, Providers.Google)
-	}
-
-	@ApiOkResponse({
-		description:
-			'Basic URL to initiate Facebook Strategy (NOT WORKING IN SWAGGER)'
-	})
-	@Get('facebook')
-	@UseGuards(FacebookOauthGuard)
-	async facebookAuth(@Req() _req: Request) {
-		// Guard redirects
-	}
-
-	@ApiOkResponse({
-		description:
-			'Redirect URL for Facebook Strategy (NOT WORKING IN SWAGGER)'
-	})
-	@Get('facebook/redirect')
-	@UseGuards(FacebookOauthGuard)
-	async facebookAuthRedirect(@Req() req: AuthRequest, @Res() _res: Response) {
-		return this.authService.socialProviderLogin(req, Providers.Facebook)
 	}
 
 	@ApiCookieAuth()

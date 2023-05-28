@@ -7,14 +7,9 @@ import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis'
 
 import { V1Module } from './v1/v1.module'
 import { MainController } from './app.controller'
-import {
-	WsEmitterClientOptions,
-	WsEmitterModule
-} from './v1/chat/ws-emitter.module'
+
 import { User } from '../common/entities'
-import { Invitation, Room } from './v1/room/entities'
-import { Message } from './v1/message/message.entity'
-import { Conversation } from './v1/conversation/conversation.entity'
+import { Certification } from './v1/certification/certification.entity'
 
 @Module({
 	imports: [
@@ -29,7 +24,7 @@ import { Conversation } from './v1/conversation/conversation.entity'
 					username: configService.get('DB_USERNAME'),
 					password: configService.get('DB_PASSWORD'),
 					database: configService.get('DB_DATABASE'),
-					entities: [User, Room, Invitation, Message, Conversation],
+					entities: [User, Certification],
 					synchronize: true
 				} as TypeOrmModuleAsyncOptions
 			}
@@ -47,20 +42,6 @@ import { Conversation } from './v1/conversation/conversation.entity'
 			useFactory: async (
 				configService: ConfigService
 			): Promise<RedisModuleOptions> => {
-				return {
-					config: {
-						host: configService.get('REDIS_HOST') || 'localhost',
-						port: configService.get('REDIS_PORT') || 6379
-					}
-				}
-			}
-		}),
-		WsEmitterModule.registerAsync({
-			imports: [ConfigModule],
-			inject: [ConfigService],
-			useFactory: async (
-				configService: ConfigService
-			): Promise<WsEmitterClientOptions> => {
 				return {
 					config: {
 						host: configService.get('REDIS_HOST') || 'localhost',

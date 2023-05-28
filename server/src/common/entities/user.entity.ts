@@ -11,8 +11,6 @@ import * as argon2 from 'argon2'
 
 import { AbstractEntity } from './'
 import { Providers, AccountStatus, Role } from '../enums'
-import { Invitation, Room } from '../../modules/v1/room/entities'
-import { Message } from '../../modules/v1/message/message.entity'
 
 @Entity()
 export class User extends AbstractEntity<User> {
@@ -97,14 +95,19 @@ export class User extends AbstractEntity<User> {
 	})
 	public accountStatus: AccountStatus
 
-	@ManyToMany(() => Room, (room) => room.users)
-	public rooms: Room[]
+	@Column({
+		name: 'department',
+		length: 256,
+		default: null
+	})
+	public department: string
 
-	@OneToMany(() => Message, (message) => message.author)
-	public messages: Message[]
-
-	@OneToMany(() => Invitation, (invitation) => invitation.user)
-	public invitations: Invitation[]
+	@Column({
+		name: 'class',
+		length: 256,
+		default: null
+	})
+	public class: string
 
 	@BeforeInsert()
 	async hashPassword() {

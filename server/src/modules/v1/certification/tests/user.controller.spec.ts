@@ -4,7 +4,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
 
 import { User } from '../../../../common/entities'
 import { createTestConfiguration } from '../../../../../test/test-utils'
-import { UserRepository } from '../repositories/user.repository'
+import { UserRepository } from '../repositories/certification.repository'
 import { UserService } from '../certification.service'
 import { UserController } from '../certification.controller'
 import { Invitation, Room } from '../../room/entities'

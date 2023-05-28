@@ -26,6 +26,11 @@ export class UserService {
 		return user
 	}
 
+	public async list() {
+		const users = await this.userRepository.find()
+		return users
+	}
+
 	public async update(userId: string, values: QueryDeepPartialEntity<User>) {
 		this.userRepository
 			.createQueryBuilder()

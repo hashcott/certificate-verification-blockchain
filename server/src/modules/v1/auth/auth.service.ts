@@ -209,33 +209,6 @@ export class AuthService {
 		}
 	}
 
-	public async socialProviderLogin(req: AuthRequest, provider: Providers) {
-		try {
-			if (provider === Providers.Google) {
-				if (!req.user.verified) {
-					throw new BadRequestException(
-						'This Google account is not verified'
-					)
-				}
-			}
-			const user = await this.userService.continueWithProvider(req)
-			const [accessToken, refreshToken] = await this.generateTokens(user)
-			await this.setTokens(req, { accessToken, refreshToken })
-
-			// req.res.redirect('/api/v1/auth/me')
-			req.res.redirect(`${process.env.ORIGIN}/me`)
-
-			return {
-				user,
-				accessToken
-			}
-		} catch (err) {
-			req.res.redirect(
-				`${process.env.ORIGIN}/login/error?message=${err.response.message}`
-			)
-		}
-	}
-
 	private async sendConfirmationToken(user: User) {
 		const token = nanoid()
 

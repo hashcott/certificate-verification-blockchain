@@ -1,10 +1,14 @@
-import { Body, Controller, Patch, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { UserService } from './user.service'
-import { CurrentUser, Verified as Status } from '../../../common/decorators'
-import { AccountStatus } from '../../../common/enums'
-import { JwtAuthGuard, VerifiedGuard } from '../../../common/guards'
+import {
+	CurrentUser,
+	Roles,
+	Verified as Status
+} from '../../../common/decorators'
+import { AccountStatus, Role } from '../../../common/enums'
+import { JwtAuthGuard, RolesGuard, VerifiedGuard } from '../../../common/guards'
 import { UpdateUserDto } from '../../../common/dtos'
 
 @ApiTags('v1/user')
@@ -22,5 +26,12 @@ export class UserController {
 		@Body() updateData: UpdateUserDto
 	) {
 		return this.userService.updateProfile(id, updateData)
+	}
+
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles(Role.ADMIN, Role.MODERATOR)
+	@Get('list')
+	listUser() {
+		return this.userService.list()
 	}
 }
