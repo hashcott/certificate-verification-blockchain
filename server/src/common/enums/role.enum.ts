@@ -5,10 +5,10 @@ export enum Role {
 }
 
 export enum Position {
-	KHOA = 'khoa',
-	DAOTAO = 'daotao',
-	TAIVU = 'taivu',
-	HT = 'hieutruong',
-	THUVIEN = 'thuvien',
-	KTX = 'ktx'
+	KHOA = 'KHOA',
+	DAOTAO = 'DAOTAO',
+	TAIVU = 'TAIVU',
+	HT = 'HT',
+	THUVIEN = 'THUVIEN',
+	KTX = 'KTX'
 }

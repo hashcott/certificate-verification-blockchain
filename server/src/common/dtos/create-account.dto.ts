@@ -6,6 +6,7 @@ import {
 	Matches,
 	IsEmail
 } from 'class-validator'
+import { Role } from 'common/enums'
 
 export class CreateAccountDto {
 	@ApiProperty({
@@ -77,4 +78,13 @@ export class CreateAccountDto {
 			'Display name can include only letters, numbers and space between words and be max 30 characters long'
 	})
 	displayName: string
+
+	@ApiProperty({
+		required: true,
+		example: 'moderator'
+	})
+	@IsNotEmpty({
+		message: 'Rolde cannot be empty or whitespace'
+	})
+	role: Role
 }
