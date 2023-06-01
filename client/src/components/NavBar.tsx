@@ -98,7 +98,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
 					</div>
 					<div className="flex-none px-2 mx-2">
 						<Link className="text-lg font-bold" href="/">
-							PoProstuWitold
+							Certs.io
 						</Link>
 					</div>
 					<div className="hidden lg:flex-none lg:flex">
@@ -110,9 +110,6 @@ export const NavBar: React.FC<NavBarProps> = () => {
 									</li>
 									<li>
 										<button onClick={logout}>Logout</button>
-									</li>
-									<li>
-										<Link href="/chat">Chats</Link>
 									</li>
 								</>
 							) : (

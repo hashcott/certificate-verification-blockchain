@@ -6,29 +6,140 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 
-import { User } from '../../../common/entities'
-import { AccountStatus, PostgresErrorCode } from '../../../common/enums'
+import { Certification, User } from '../../../common/entities'
+import {
+	AccountStatus,
+	DegreeClassfication,
+	PostgresErrorCode,
+	Providers,
+	Role
+} from '../../../common/enums'
 import { UniqueViolation } from '../../../common/exceptions'
 import { Repository } from 'typeorm'
-
+import { LocalFileDto } from 'common/dtos/localFile.dto'
+import { join } from 'path'
+import readXlsxFile from 'read-excel-file/node'
+import { LocalFilesService } from './localFiles.service'
 @Injectable()
 export class UserService {
 	constructor(
 		@InjectRepository(User)
-		private readonly userRepository: Repository<User>
+		private readonly userRepository: Repository<User>,
+		private localFilesService: LocalFilesService
 	) {}
 
-	public async create(data: Partial<User>) {
-		const user = this.userRepository.create(data)
+	public async create(data: Partial<User>, cert?: Certification) {
+		try {
+			const user = this.userRepository.create(data)
+			if (cert) {
+				console.log(cert)
 
-		await this.userRepository.save(user)
+				user.certification = cert
+			}
+			await this.userRepository.save(user)
+			return user
+		} catch (error) {
+			throw new Error(data.providerId)
+		}
+	}
+	public async saveUsers(fileData: LocalFileDto) {
+		await this.localFilesService.saveLocalFileData(fileData)
+		const usersPromise: Promise<User>[] = []
+		try {
+			await readXlsxFile(join(process.cwd(), fileData.path)).then(
+				(rows) => {
+					rows.shift()
+					rows.forEach((row) => {
+						console.log(row)
 
-		return user
+						const [
+							provider,
+							providerId,
+							email,
+							firstName,
+							lastName,
+							password,
+							department,
+							className,
+							academicYear,
+							degreeClassfication
+						] = row
+						const certification = new Certification({
+							organizationName: provider as Providers,
+							academicYear: academicYear as string,
+							degreeClassfication:
+								degreeClassfication as DegreeClassfication
+						})
+						const user: Partial<User> = {
+							provider: provider as Providers,
+							providerId: providerId as string,
+							displayName: providerId as string,
+							email: email as string,
+							firstName: firstName as string,
+							lastName: lastName as string,
+							password: password as string,
+							department: department as string,
+							class: className as string
+						}
+						usersPromise.push(this.create(user, certification))
+					})
+				}
+			)
+
+			const users = await Promise.all(usersPromise)
+			return users
+		} catch (error) {
+			return error
+		}
 	}
 
 	public async list() {
-		const users = await this.userRepository.find()
+		const users = await this.userRepository
+			.createQueryBuilder('user')
+			.where('user.role = :role', {
+				role: Role.USER
+			})
+			.select([
+				'user.provider',
+				'user.provider_id',
+				'user.email',
+				'user.first_name',
+				'user.last_name',
+				'user.department',
+				'user.class'
+			])
+			.execute()
+
 		return users
+	}
+
+	public searchUsers = (args: any) => {
+		const { searchQuery } = args
+
+		return this.userRepository
+			.createQueryBuilder()
+			.select([
+				'user.provider',
+				'user.provider_id',
+				'user.email',
+				'user.first_name',
+				'user.last_name',
+				'user.department',
+				'user.class'
+			])
+			.where('user.role = :role', {
+				role: Role.USER
+			})
+			.andWhere('fullName ILIKE :searchQuery', {
+				searchQuery: `%${searchQuery}%`
+			})
+			.orWhere('username ILIKE :searchQuery', {
+				searchQuery: `%${searchQuery}%`
+			})
+			.orWhere('description ILIKE :searchQuery', {
+				searchQuery: `%${searchQuery}%`
+			})
+			.getMany()
 	}
 
 	public async update(userId: string, values: QueryDeepPartialEntity<User>) {

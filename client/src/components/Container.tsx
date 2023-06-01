@@ -13,7 +13,7 @@ export const Container: React.FC<ContainerProps> = ({
 }) => {
 	return (
 		<div
-			className={`md:container md:mx-auto min-h-screen ${className}`}
+			className={`container mx-auto md:container md:mx-auto min-h-screen ${className}`}
 			style={style}
 		>
 			{children}

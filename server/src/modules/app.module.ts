@@ -8,8 +8,8 @@ import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis'
 import { V1Module } from './v1/v1.module'
 import { MainController } from './app.controller'
 
-import { User } from '../common/entities'
-import { Certification } from './v1/certification/certification.entity'
+import { LocalFile, User } from '../common/entities'
+import { Certification } from 'common/entities/certification.entity'
 
 @Module({
 	imports: [
@@ -24,7 +24,7 @@ import { Certification } from './v1/certification/certification.entity'
 					username: configService.get('DB_USERNAME'),
 					password: configService.get('DB_PASSWORD'),
 					database: configService.get('DB_DATABASE'),
-					entities: [User, Certification],
+					entities: [User, LocalFile, Certification],
 					synchronize: true
 				} as TypeOrmModuleAsyncOptions
 			}

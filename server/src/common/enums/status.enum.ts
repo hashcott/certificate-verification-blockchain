@@ -9,3 +9,8 @@ export enum CertificationStatus {
 	VERIFIED = 'verified',
 	BANNED = 'banned'
 }
+
+export enum DegreeClassfication {
+	EXCELLENT = 'excellent',
+	GOOD = 'good'
+}

@@ -4,11 +4,11 @@ export enum Role {
 	ADMIN = 'admin'
 }
 
-export enum POSITION {
+export enum Position {
 	KHOA = 'khoa',
 	DAOTAO = 'daotao',
 	TAIVU = 'taivu',
-	ADMIN = 'admin',
+	HT = 'hieutruong',
 	THUVIEN = 'thuvien',
 	KTX = 'ktx'
 }

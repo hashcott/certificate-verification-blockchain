@@ -4,13 +4,13 @@ import {
 	Column,
 	Entity,
 	Index,
-	ManyToMany,
-	OneToMany
+	JoinColumn,
+	OneToOne
 } from 'typeorm'
 import * as argon2 from 'argon2'
 
-import { AbstractEntity } from './'
-import { Providers, AccountStatus, Role } from '../enums'
+import { AbstractEntity, Certification } from './'
+import { Providers, AccountStatus, Role, Position } from '../enums'
 
 @Entity()
 export class User extends AbstractEntity<User> {
@@ -87,6 +87,14 @@ export class User extends AbstractEntity<User> {
 	public role: Role
 
 	@Column({
+		name: 'position',
+		nullable: true,
+		type: 'enum',
+		enum: Position
+	})
+	public position: Position
+
+	@Column({
 		name: 'account_status',
 		nullable: false,
 		default: AccountStatus.PENDING,
@@ -108,6 +116,10 @@ export class User extends AbstractEntity<User> {
 		default: null
 	})
 	public class: string
+
+	@OneToOne(() => Certification, (cert) => cert.user, { cascade: ['insert'] })
+	@JoinColumn()
+	public certification: Certification
 
 	@BeforeInsert()
 	async hashPassword() {

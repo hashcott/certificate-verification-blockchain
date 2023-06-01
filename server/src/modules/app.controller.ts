@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common'
 export class MainController {
 	@Get()
 	getInfo(): string {
-		return 'NestJS NextJS Boilerplate by PoProstuWitold v1'
+		return 'Developed by Harry Nguyen'
 	}
 }

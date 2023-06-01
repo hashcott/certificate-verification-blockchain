@@ -1,26 +1,36 @@
-import { Body, Controller, Patch, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
-import { UserService } from './certification.service'
+import { CertificationService } from './certification.service'
 import { CurrentUser, Roles } from '../../../common/decorators'
 import { Role } from '../../../common/enums'
 import { JwtAuthGuard, VerifiedGuard } from '../../../common/guards'
-import { UpdateUserDto } from '../../../common/dtos'
 
 @ApiTags('v1/certification')
 @Controller({
 	path: 'certification',
 	version: '1'
 })
-export class UserController {
-	constructor(private readonly userService: UserService) {}
+export class CertificationController {
+	constructor(private readonly certificationervice: CertificationService) {}
 	@Roles(Role.MODERATOR)
 	@UseGuards(JwtAuthGuard, VerifiedGuard)
-	@Patch('update')
-	updateProfile(
-		@CurrentUser('id') id: string,
-		@Body() updateData: UpdateUserDto
-	) {
-		return this.userService.updateProfile(id, updateData)
+	@Patch('confirm')
+	confirm(@CurrentUser('id') idUser: string, @Param('id') id: string) {
+		return this.certificationervice.confirm(idUser, id)
+	}
+
+	@Roles(Role.MODERATOR)
+	@UseGuards(JwtAuthGuard, VerifiedGuard)
+	@Patch('unconfirm')
+	unconfirm(@CurrentUser('id') idUser: string, @Param('id') id: string) {
+		return this.certificationervice.unconfirm(idUser, id)
+	}
+
+	@Roles(Role.MODERATOR, Role.ADMIN)
+	@UseGuards(JwtAuthGuard, VerifiedGuard)
+	@Get()
+	listCerts() {
+		return this.certificationervice.listCerts()
 	}
 }
