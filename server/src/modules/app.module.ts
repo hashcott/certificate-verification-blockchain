@@ -34,7 +34,7 @@ import { Certification } from 'common/entities/certification.entity'
 		}),
 		ThrottlerModule.forRoot({
 			ttl: 60,
-			limit: 10
+			limit: 1000
 		}),
 		RedisModule.forRootAsync({
 			imports: [ConfigModule],

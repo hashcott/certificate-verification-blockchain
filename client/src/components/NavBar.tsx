@@ -5,12 +5,10 @@ import { useRouter } from "next/router";
 
 import { authRoutes, themes } from "../utils/constants";
 import { Dispatch, RootState } from "../store/store";
-import { useAuthenticatedSocket } from "../utils/useSocket";
 
 interface NavBarProps {}
 
 export const NavBar: React.FC<NavBarProps> = () => {
-	useAuthenticatedSocket("ws://localhost:4001/chat");
 	const { theme, setTheme } = useTheme();
 	const router = useRouter();
 	const dispatch = useDispatch<Dispatch>();

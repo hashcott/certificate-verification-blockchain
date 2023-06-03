@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /poprostuwitold/client
+WORKDIR /harry/client
 
 COPY package.json pnpm-lock.yaml ./
 

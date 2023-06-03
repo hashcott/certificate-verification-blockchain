@@ -2,7 +2,7 @@
 	"name": "server",
 	"version": "1.0.0",
 	"description": "Main backend part for nest-next-boilerplate app",
-	"author": "PoProstuWitold",
+	"author": "Harry Nguyen",
 	"private": true,
 	"license": "MIT",
 	"scripts": {

@@ -6,7 +6,7 @@ import {
 	Matches,
 	IsEmail
 } from 'class-validator'
-import { Role } from 'common/enums'
+import { Position, Role } from 'common/enums'
 
 export class CreateAccountDto {
 	@ApiProperty({
@@ -84,7 +84,16 @@ export class CreateAccountDto {
 		example: 'moderator'
 	})
 	@IsNotEmpty({
-		message: 'Rolde cannot be empty or whitespace'
+		message: 'Role cannot be empty or whitespace'
 	})
 	role: Role
+
+	@ApiProperty({
+		required: true,
+		example: 'moderator'
+	})
+	@IsNotEmpty({
+		message: 'Position cannot be empty or whitespace'
+	})
+	position: Position
 }

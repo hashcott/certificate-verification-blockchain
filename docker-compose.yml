@@ -26,8 +26,8 @@ services:
       target: development
     env_file: ./server/.env
     volumes:
-      - ./server:/poprostuwitold/server
-      - /poprostuwitold/server/node_modules/
+      - ./server:/harrynguyen/server
+      - /harrynguyen/server/node_modules/
     command: pnpm run start:debug
     depends_on:
       - postgres-main
@@ -45,8 +45,8 @@ services:
       target: development
     env_file: ./workers/queues/.env
     volumes:
-      - ./workers/queues:/poprostuwitold/workers/queues
-      - /poprostuwitold/workers/queues/node_modules/
+      - ./workers/queues:/harrynguyen/workers/queues
+      - /harrynguyen/workers/queues/node_modules/
     command: pnpm run start:debug
     depends_on:
       - server

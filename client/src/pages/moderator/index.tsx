@@ -5,29 +5,28 @@ import { useRouter } from "next/router";
 import { Container } from "../../components/Container";
 import { RootState } from "../../store/store";
 import { AuthOption, withAuth } from "../../utils/withAuth";
-import User from "../../components/admin/User";
 import { useState } from "react";
-import { AiOutlineUser, AiOutlineSafetyCertificate } from "react-icons/ai";
-import Statistic from "../../components/admin/Statistic";
-import Certification from "../../components/admin/Certification";
+import { AiOutlineSafetyCertificate } from "react-icons/ai";
+import Statistic from "../../components/moderator/Statistic";
+import Certification from "../../components/moderator/Certification";
 
-interface AdminProps {}
+interface MeProps {}
 
 enum Screen {
-	USER = "user",
 	CERTIFICATION = "certification",
 	STATISTIC = "statistic",
 }
 
-const Admin: React.FC<AdminProps> = ({}) => {
+const Me: React.FC<MeProps> = ({}) => {
 	let userState = useSelector((state: RootState) => state.user);
 	const { user, authenticated } = userState;
 	const router = useRouter();
-	const [screen, setScreen] = useState(Screen.USER);
+	const [screen, setScreen] = useState(Screen.CERTIFICATION);
+
 	return (
 		<>
 			<Head>
-				<title>Admin Management</title>
+				<title>Trang quản lý</title>
 				<meta name="description" content="Profile page" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
@@ -66,17 +65,6 @@ const Admin: React.FC<AdminProps> = ({}) => {
 									</li>
 									<li
 										className={`${
-											screen === Screen.USER && "active"
-										}`}
-										onClick={() => setScreen(Screen.USER)}
-									>
-										<a>
-											<AiOutlineUser />
-											Tài khoản QL
-										</a>
-									</li>
-									<li
-										className={`${
 											screen === Screen.CERTIFICATION &&
 											"active"
 										}`}
@@ -91,9 +79,8 @@ const Admin: React.FC<AdminProps> = ({}) => {
 									</li>
 								</ul>
 							</div>
-							<div className="w-full md:w-10/12">
+							<div className="w-full lg:mx-2 md:w-10/12">
 								{screen === Screen.STATISTIC && <Statistic />}
-								{screen === Screen.USER && <User />}
 								{screen === Screen.CERTIFICATION && (
 									<Certification />
 								)}
@@ -108,4 +95,4 @@ const Admin: React.FC<AdminProps> = ({}) => {
 	);
 };
 
-export default withAuth(AuthOption.REQUIRED, Admin);
+export default withAuth(AuthOption.REQUIRED, Me);

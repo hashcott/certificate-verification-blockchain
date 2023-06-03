@@ -13,6 +13,7 @@ import { Dispatch } from "../../store/store";
 import { AuthOption, withAuth } from "../../utils/withAuth";
 import { SERVER_URL } from "../../utils/constants";
 import { ErrorField } from "../../components/ErrorField";
+import { Role } from "../../utils/types";
 
 interface LoginProps {}
 
@@ -64,8 +65,11 @@ const Login: React.FC<LoginProps> = ({}) => {
 				console.log("ApiErrors", ApiErrors);
 			}
 			console.log("ApiErrors", ApiErrors);
-			if (res.user.role == "admin") {
+			if (res.user.role == Role.ADMIN) {
 				router.push("/admin");
+			}
+			if (res.user.role == Role.MODERATOR) {
+				router.push("/moderator");
 			}
 			if (res.user.role == "user") {
 				router.push("/me");
@@ -137,7 +141,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 				<meta name="description" content="Login or create account" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<div className="flex w-full m-auto mt-0 shadow-xl lg:w-4/12 md:w-10/12 md:mt-28 bg-base-200 rounded-xl">
+			<div className="flex w-full m-auto mt-0 shadow-xl lg:w-4/12 md:w-10/12 md:mt-28 bg-base-200 rounded-xl p-10">
 				<div className="mx-auto w-96">
 					<p className="m-10 mx-auto text-lg font-bold text-center">
 						CERTS.IO

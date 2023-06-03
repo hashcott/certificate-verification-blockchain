@@ -45,6 +45,13 @@ export class UserController {
 		return this.userService.list()
 	}
 
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles(Role.ADMIN)
+	@Get('list-manager')
+	listManager() {
+		return this.userService.listManager()
+	}
+
 	@Post('xlsx')
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles(Role.ADMIN)

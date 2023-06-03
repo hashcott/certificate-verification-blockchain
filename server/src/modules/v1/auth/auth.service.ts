@@ -129,7 +129,7 @@ export class AuthService {
 				id: user.id
 			},
 			{
-				issuer: 'PoProstuWitold',
+				issuer: 'Harry Nguyen',
 				secret: this.configService.get('JWT_ACCESS_SECRET_KEY'),
 				expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION_TIME')
 			}
@@ -142,7 +142,7 @@ export class AuthService {
 			},
 			{
 				jwtid,
-				issuer: 'PoProstuWitold',
+				issuer: 'Harry Nguyen',
 				secret: this.configService.get('JWT_REFRESH_SECRET_KEY'),
 				expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION_TIME')
 			}
@@ -372,7 +372,7 @@ export class AuthService {
 				id: verifiedJWt.id
 			},
 			{
-				issuer: 'PoProstuWitold',
+				issuer: 'Harry Nguyen',
 				secret: this.configService.get('JWT_ACCESS_SECRET_KEY'),
 				expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION_TIME')
 			}

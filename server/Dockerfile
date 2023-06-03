@@ -3,7 +3,7 @@
 #################
 FROM node:alpine AS development
 
-WORKDIR /poprostuwitold/server
+WORKDIR /harrynguyen/server
 
 COPY package.json pnpm-lock.yaml ./
 
@@ -22,9 +22,9 @@ FROM node:alpine AS production
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-WORKDIR /poprostuwitold/server
+WORKDIR /harrynguyen/server
 
-COPY --from=development /poprostuwitold/server .
+COPY --from=development /harrynguyen/server .
 
 EXPOSE 4000
 

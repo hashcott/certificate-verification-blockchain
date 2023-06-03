@@ -29,18 +29,15 @@ export class UserService {
 	) {}
 
 	public async create(data: Partial<User>, cert?: Certification) {
-		try {
-			const user = this.userRepository.create(data)
-			if (cert) {
-				console.log(cert)
-
-				user.certification = cert
-			}
-			await this.userRepository.save(user)
-			return user
-		} catch (error) {
-			throw new Error(data.providerId)
+		const user = this.userRepository.create(data)
+		if (!data.providerId) {
+			user.providerId = user.id
 		}
+		if (cert) {
+			user.certification = cert
+		}
+		await this.userRepository.save(user)
+		return user
 	}
 	public async saveUsers(fileData: LocalFileDto) {
 		await this.localFilesService.saveLocalFileData(fileData)
@@ -50,8 +47,6 @@ export class UserService {
 				(rows) => {
 					rows.shift()
 					rows.forEach((row) => {
-						console.log(row)
-
 						const [
 							provider,
 							providerId,
@@ -89,26 +84,39 @@ export class UserService {
 			const users = await Promise.all(usersPromise)
 			return users
 		} catch (error) {
-			return error
+			throw error
 		}
 	}
 
 	public async list() {
-		const users = await this.userRepository
-			.createQueryBuilder('user')
-			.where('user.role = :role', {
+		const users = await this.userRepository.find({
+			where: {
 				role: Role.USER
-			})
-			.select([
-				'user.provider',
-				'user.provider_id',
-				'user.email',
-				'user.first_name',
-				'user.last_name',
-				'user.department',
-				'user.class'
-			])
-			.execute()
+			},
+			relations: {
+				certification: true
+			},
+			select: [
+				'providerId',
+				'email',
+				'firstName',
+				'lastName',
+				'department',
+				'class',
+				'certification'
+			]
+		})
+
+		return users
+	}
+
+	public async listManager() {
+		const users = await this.userRepository.find({
+			where: {
+				role: Role.MODERATOR
+			},
+			select: ['id', 'email', 'firstName', 'lastName', 'role', 'position']
+		})
 
 		return users
 	}
