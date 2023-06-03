@@ -4,6 +4,7 @@ import {
 	Get,
 	Patch,
 	Post,
+	Query,
 	UploadedFile,
 	UseGuards,
 	UseInterceptors
@@ -43,6 +44,11 @@ export class UserController {
 	@Get('list')
 	listUser() {
 		return this.userService.list()
+	}
+
+	@Get('search')
+	search(@Query('q') query) {
+		return this.userService.searchUsers(query)
 	}
 
 	@UseGuards(JwtAuthGuard, RolesGuard)

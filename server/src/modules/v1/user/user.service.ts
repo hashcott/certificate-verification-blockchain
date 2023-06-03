@@ -121,9 +121,7 @@ export class UserService {
 		return users
 	}
 
-	public searchUsers = (args: any) => {
-		const { searchQuery } = args
-
+	public searchUsers = (searchQuery: string) => {
 		return this.userRepository
 			.createQueryBuilder()
 			.select([
@@ -138,13 +136,16 @@ export class UserService {
 			.where('user.role = :role', {
 				role: Role.USER
 			})
-			.andWhere('fullName ILIKE :searchQuery', {
+			.andWhere('user.provider_id ILIKE :searchQuery', {
 				searchQuery: `%${searchQuery}%`
 			})
-			.orWhere('username ILIKE :searchQuery', {
+			.orWhere('email ILIKE :searchQuery', {
 				searchQuery: `%${searchQuery}%`
 			})
-			.orWhere('description ILIKE :searchQuery', {
+			.orWhere('first_name ILIKE :searchQuery', {
+				searchQuery: `%${searchQuery}%`
+			})
+			.orWhere('last_name ILIKE :searchQuery', {
 				searchQuery: `%${searchQuery}%`
 			})
 			.getMany()

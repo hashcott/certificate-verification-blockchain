@@ -2,7 +2,7 @@ import { createModel } from "@rematch/core";
 import axios, { AxiosError } from "axios";
 
 import { RootModel } from ".";
-import { User } from "../../utils/types";
+import { CertificationStatus, User } from "../../utils/types";
 
 interface UserState {
 	authenticated: boolean;
@@ -45,6 +45,23 @@ export const user = createModel<RootModel>()({
 			return {
 				...state,
 				student: [...state.student, ...payload],
+			};
+		},
+		UPDATE_CERT_STATUS: (state, payload) => {
+			const student = state.student.find(
+				({ providerId }) => providerId === payload.providerId
+			);
+			if (student && state.user?.position) {
+				student.certification[`isVerifiedBy${state.user?.position}`] =
+					payload.status;
+			}
+			if (student && payload.isCheck) {
+				student.certification["certificationStatus"] =
+					CertificationStatus.VERIFIED;
+			}
+			return {
+				...state,
+				student: [...state.student],
 			};
 		},
 		UPDATE_MANAGER: (state, payload) => {
@@ -181,6 +198,46 @@ export const user = createModel<RootModel>()({
 				});
 				dispatch.user.UPDATE_STUDENT(data);
 				console.log("Reconnected");
+			} catch (err) {
+				console.log(`Get list managers error`);
+			}
+		},
+
+		async confirm({ providerId }) {
+			try {
+				let { data } = await axios.patch("/certification/confirm", {
+					providerId,
+				});
+				if (data && data.isCheck) {
+					dispatch.user.UPDATE_CERT_STATUS({
+						providerId,
+						status: true,
+						isCheck: true,
+					});
+				}
+				if (data && !data.isCheck) {
+					dispatch.user.UPDATE_CERT_STATUS({
+						providerId,
+						status: true,
+					});
+				}
+				console.log("Confirmed", providerId);
+			} catch (err) {
+				console.log(`Get list managers error`);
+			}
+		},
+		async unconfirm({ providerId }) {
+			try {
+				let { data } = await axios.patch("/certification/confirm", {
+					providerId,
+				});
+				if (data) {
+					dispatch.user.UPDATE_CERT_STATUS({
+						providerId,
+						status: false,
+					});
+				}
+				console.log("UnConfirmed", providerId);
 			} catch (err) {
 				console.log(`Get list managers error`);
 			}

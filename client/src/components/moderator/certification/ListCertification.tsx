@@ -1,14 +1,12 @@
 import Head from "next/head";
-import Image from "next/image";
-import { BsInfoLg } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
 
 import { useEffect, useMemo, useState } from "react";
 import { Dispatch, RootState } from "../../../store/store";
-import { Container } from "../../Container";
 import { AuthOption, withAuth } from "../../../utils/withAuth";
 import { certColumnDefs } from "./table/CertColumnDefs";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 import {
 	Column,
 	ColumnFiltersState,
@@ -31,6 +29,7 @@ import {
 	rankItem,
 	compareItems,
 } from "@tanstack/match-sorter-utils";
+import { CertificationStatus } from "../../../utils/types";
 
 interface CertificationProps {}
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -81,8 +80,29 @@ const Certification: React.FC<CertificationProps> = ({}) => {
 	const headers = table.getHeaderGroups();
 	const rows = table.getRowModel().rows;
 
-	const handleConfirm = (msv: string) => {
-		console.log(msv);
+	const handleConfirm = (providerId: string, action: boolean) => {
+		confirmAlert({
+			title: `Bạn đang xác nhận đủ điều kiện tốt nghiệp cho sinh viên với mã sinh viên ${providerId}.`,
+			message: `Ấn "Đồng ý" nếu bạn xác nhận sinh viên trên đủ điều kiện tốt nghiệp. Bạn sẽ chịu hoàn toàn trách nhiệm trước pháp luật với hành động này !"`,
+			buttons: [
+				{
+					label: "Đồng ý",
+					onClick: () => {
+						if (action) {
+							console.log("hello");
+
+							dispatch.user.unconfirm({ providerId });
+							return;
+						}
+						dispatch.user.confirm({ providerId });
+					},
+				},
+				{
+					label: "Không đồng ý",
+					onClick: () => {},
+				},
+			],
+		});
 	};
 	const renderTable = () => {
 		if (student.length > 0) {
@@ -182,13 +202,35 @@ const Certification: React.FC<CertificationProps> = ({}) => {
 											.getContext()
 											.column.id.includes("action")
 									) {
+										if (
+											row.getValue(
+												"certificationStatus"
+											) === CertificationStatus.VERIFIED
+										) {
+											return (
+												<button className="btn btn-danger">
+													Blockchain Verified
+												</button>
+											);
+										}
+										if (
+											row.getValue(
+												"certificationStatus"
+											) === CertificationStatus.BANNED
+										) {
+											return (
+												<button className="btn btn-danger">
+													Đã bị hủy bỏ
+												</button>
+											);
+										}
 										return (
 											<td key={cell.id}>
 												<button
 													className={`btn btn-${
-														cell
-															.getContext()
-															.getValue() == true
+														row.getValue(
+															`isVerifiedBy${user?.position}`
+														) === true
 															? "danger"
 															: "success"
 													}`}
@@ -196,13 +238,16 @@ const Certification: React.FC<CertificationProps> = ({}) => {
 														handleConfirm(
 															row.getValue(
 																"providerId"
+															),
+															row.getValue(
+																`isVerifiedBy${user?.position}`
 															)
 														)
 													}
 												>
-													{cell
-														.getContext()
-														.getValue() == true
+													{row.getValue(
+														`isVerifiedBy${user?.position}`
+													) === true
 														? "Hủy xác thực"
 														: "Xác thực"}
 												</button>
@@ -321,7 +366,17 @@ function Filter({
 			<DebouncedInput
 				type="text"
 				value={(columnFilterValue ?? "") as string}
-				onChange={(value) => column.setFilterValue(value)}
+				onChange={(value) => {
+					if (value === "true") {
+						column.setFilterValue(true);
+						return;
+					}
+					if (value === "false") {
+						column.setFilterValue(false);
+						return;
+					}
+					column.setFilterValue(value);
+				}}
 				placeholder={`Tìm... (${column.getFacetedUniqueValues().size})`}
 				className="input input-bordered w-full text-xs"
 				list={column.id + "list"}

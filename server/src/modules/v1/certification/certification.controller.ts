@@ -13,18 +13,25 @@ import { JwtAuthGuard, VerifiedGuard } from '../../../common/guards'
 })
 export class CertificationController {
 	constructor(private readonly certificationervice: CertificationService) {}
+
 	@Roles(Role.MODERATOR)
 	@UseGuards(JwtAuthGuard, VerifiedGuard)
 	@Patch('confirm')
-	confirm(@CurrentUser('id') idUser: string, @Param('id') id: string) {
-		return this.certificationervice.confirm(idUser, id)
+	confirm(
+		@CurrentUser('id') idUser: string,
+		@Body('providerId') providerId: string
+	) {
+		return this.certificationervice.confirm(idUser, providerId)
 	}
 
 	@Roles(Role.MODERATOR)
 	@UseGuards(JwtAuthGuard, VerifiedGuard)
 	@Patch('unconfirm')
-	unconfirm(@CurrentUser('id') idUser: string, @Param('id') id: string) {
-		return this.certificationervice.unconfirm(idUser, id)
+	unconfirm(
+		@CurrentUser('id') idUser: string,
+		@Body('providerId') providerId: string
+	) {
+		return this.certificationervice.unconfirm(idUser, providerId)
 	}
 
 	@Roles(Role.MODERATOR, Role.ADMIN)

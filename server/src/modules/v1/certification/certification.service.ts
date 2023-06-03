@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 
 import { Certification, User } from '../../../common/entities'
 import { Repository } from 'typeorm'
-import { CertificationStatus } from 'common/enums'
+import { CertificationStatus, Position } from 'common/enums'
 
 @Injectable()
 export class CertificationService {
@@ -18,37 +18,81 @@ export class CertificationService {
 		return []
 	}
 
-	public async confirm(idUser: string, idCert: string) {
-		const user = await this.userRepository.findOne({
-			where: {
-				id: idUser
-			}
-		})
-
-		if (!user) {
-			throw new Error('User not found')
-		}
-
-		const cert = await this.certificationRepository.findOne({
-			where: {
-				id: idCert
-			}
-		})
-
-		cert[`isVerifiedBy${user.position}`] = true
-
-		return true
-	}
-
 	public async listCerts() {
 		const certs = await this.certificationRepository.find()
 		return certs
 	}
 
-	public async unconfirm(idUser: string, idCert: string) {
-		const user = await this.userRepository.findOne({
+	public async confirm(idUser: string, providerId: string) {
+		const mod = await this.userRepository.findOne({
 			where: {
 				id: idUser
+			}
+		})
+
+		if (!mod) {
+			throw new Error('User managemnet not found')
+		}
+
+		const user = await this.userRepository.findOne({
+			where: {
+				providerId: providerId
+			},
+			relations: {
+				certification: true
+			}
+		})
+
+		if (
+			user.certification.certificationStatus ===
+			CertificationStatus.VERIFIED
+		) {
+			throw new Error('Saved to blockchain, cannt modifier')
+		}
+
+		if (!user) {
+			throw new Error('User not found')
+		}
+
+		const cert = await this.certificationRepository.save({
+			...user.certification,
+			[`isVerifiedBy${mod.position}`]: true
+		})
+		let isCheck = false
+		if (
+			cert[`isVerifiedBy${Position.DAOTAO}`] &&
+			cert[`isVerifiedBy${Position.HT}`] &&
+			cert[`isVerifiedBy${Position.KHOA}`] &&
+			cert[`isVerifiedBy${Position.KTX}`] &&
+			cert[`isVerifiedBy${Position.TAIVU}`] &&
+			cert[`isVerifiedBy${Position.THUVIEN}`]
+		) {
+			await this.certificationRepository.save({
+				...cert,
+				certificationStatus: CertificationStatus.VERIFIED
+			})
+			isCheck = true
+		}
+		return { isCheck }
+	}
+
+	public async unconfirm(idUser: string, providerId: string) {
+		const mod = await this.userRepository.findOne({
+			where: {
+				id: idUser
+			}
+		})
+
+		if (!mod) {
+			throw new Error('User managemnet not found')
+		}
+
+		const user = await this.userRepository.findOne({
+			where: {
+				providerId: providerId
+			},
+			relations: {
+				certification: true
 			}
 		})
 
@@ -56,17 +100,10 @@ export class CertificationService {
 			throw new Error('User not found')
 		}
 
-		const cert = await this.certificationRepository.findOne({
-			where: {
-				id: idCert
-			}
+		await this.certificationRepository.save({
+			...user.certification,
+			[`isVerifiedBy${mod.position}`]: true
 		})
-		if (cert.certificationStatus === CertificationStatus.VERIFIED) {
-			throw new Error('Certification saved into blockchain')
-		}
-
-		cert[`isVerifiedBy${user.position}`] = true
-
 		return true
 	}
 }

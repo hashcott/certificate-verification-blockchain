@@ -24,6 +24,11 @@ const Index: React.FC<IndexProps> = ({}) => {
 									type="text"
 									placeholder="Search…"
 									className="input input-bordered w-full"
+									onClick={() => {
+										console.log(
+											"-------------------------------------------------dsd"
+										);
+									}}
 								/>
 								<button className="btn btn-square btn-primary">
 									<svg
