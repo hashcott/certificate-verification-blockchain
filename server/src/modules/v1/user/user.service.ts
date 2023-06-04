@@ -15,7 +15,7 @@ import {
 	Role
 } from '../../../common/enums'
 import { UniqueViolation } from '../../../common/exceptions'
-import { Repository } from 'typeorm'
+import { Like, Repository } from 'typeorm'
 import { LocalFileDto } from 'common/dtos/localFile.dto'
 import { join } from 'path'
 import readXlsxFile from 'read-excel-file/node'
@@ -121,34 +121,30 @@ export class UserService {
 		return users
 	}
 
-	public searchUsers = (searchQuery: string) => {
-		return this.userRepository
-			.createQueryBuilder()
-			.select([
-				'user.provider',
-				'user.provider_id',
-				'user.email',
-				'user.first_name',
-				'user.last_name',
-				'user.department',
-				'user.class'
-			])
-			.where('user.role = :role', {
-				role: Role.USER
-			})
-			.andWhere('user.provider_id ILIKE :searchQuery', {
-				searchQuery: `%${searchQuery}%`
-			})
-			.orWhere('email ILIKE :searchQuery', {
-				searchQuery: `%${searchQuery}%`
-			})
-			.orWhere('first_name ILIKE :searchQuery', {
-				searchQuery: `%${searchQuery}%`
-			})
-			.orWhere('last_name ILIKE :searchQuery', {
-				searchQuery: `%${searchQuery}%`
-			})
-			.getMany()
+	public async searchUsers(searchQuery: string) {
+		const user = await this.userRepository.find({
+			where: [
+				{ role: Role.USER, providerId: Like(`%${searchQuery}%`) },
+				{ role: Role.USER, email: Like(`%${searchQuery}%`) },
+				{ role: Role.USER, firstName: Like(`%${searchQuery}%`) },
+				{ role: Role.USER, lastName: Like(`%${searchQuery}%`) }
+			],
+			relations: {
+				certification: true
+			},
+			take: 5
+		})
+		return user
+	}
+
+	public async getOne(id: string) {
+		const user = await this.userRepository.findOne({
+			where: [{ role: Role.USER, providerId: id }],
+			relations: {
+				certification: true
+			}
+		})
+		return user
 	}
 
 	public async update(userId: string, values: QueryDeepPartialEntity<User>) {

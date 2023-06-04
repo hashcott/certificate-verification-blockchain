@@ -9,6 +9,8 @@ interface UserState {
 	user: User | null;
 	manager: User[];
 	student: User[];
+	certifications: User[];
+	currentCert: User | null;
 }
 
 const initialState: UserState = {
@@ -16,6 +18,8 @@ const initialState: UserState = {
 	user: null,
 	manager: [],
 	student: [],
+	certifications: [],
+	currentCert: null,
 };
 
 export const user = createModel<RootModel>()({
@@ -68,6 +72,18 @@ export const user = createModel<RootModel>()({
 			return {
 				...state,
 				manager: [...state.manager, payload],
+			};
+		},
+		SET_CERT: (state, payload) => {
+			return {
+				...state,
+				certifications: payload,
+			};
+		},
+		SET_CURRENTCERT: (state, payload) => {
+			return {
+				...state,
+				currentCert: payload,
 			};
 		},
 		LOGOUT: (state) => {
@@ -238,6 +254,36 @@ export const user = createModel<RootModel>()({
 					});
 				}
 				console.log("UnConfirmed", providerId);
+			} catch (err) {
+				console.log(`Get list managers error`);
+			}
+		},
+		async search({ q }) {
+			try {
+				let { data } = await axios.get("/user/search", {
+					params: {
+						q,
+					},
+				});
+				if (data) {
+					dispatch.user.SET_CERT(data);
+				}
+				console.log("Found ", data.length);
+			} catch (err) {
+				console.log(`Get list managers error`);
+			}
+		},
+		async getCert({ providerId }) {
+			try {
+				let { data } = await axios.get("/user/getOne", {
+					params: {
+						providerId,
+					},
+				});
+				if (data) {
+					dispatch.user.SET_CURRENTCERT(data);
+				}
+				console.log("Found ", providerId);
 			} catch (err) {
 				console.log(`Get list managers error`);
 			}

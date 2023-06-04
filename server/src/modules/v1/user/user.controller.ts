@@ -2,6 +2,7 @@ import {
 	Body,
 	Controller,
 	Get,
+	Param,
 	Patch,
 	Post,
 	Query,
@@ -44,6 +45,11 @@ export class UserController {
 	@Get('list')
 	listUser() {
 		return this.userService.list()
+	}
+
+	@Get('getOne')
+	getOne(@Param('providerId') providerId: string) {
+		return this.userService.getOne(providerId)
 	}
 
 	@Get('search')

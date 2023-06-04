@@ -1,10 +1,41 @@
 import Head from "next/head";
 
 import { Container } from "../components/Container";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "../store/store";
+import { useState } from "react";
+import Link from "next/link";
 
 interface IndexProps {}
 
 const Index: React.FC<IndexProps> = ({}) => {
+	const dispatch = useDispatch<Dispatch>();
+	const [query, setQuery] = useState("");
+
+	let userState = useSelector((state: RootState) => state.user);
+	const { certifications } = userState;
+	const handleSearch = (q: string) => {
+		setQuery(q);
+		dispatch.user.search({ q });
+	};
+
+	const renderCert = () => {
+		if (certifications.length === 0) {
+			return;
+		}
+		return certifications.map((user) => (
+			<Link href={`cert/${user.providerId}`}>
+				<div
+					key={user.providerId}
+					className="w-full h-10 flex items-center gap-x-2 hover:bg-slate-400"
+				>
+					<p className="font-medium text-black text-base px-4">
+						{user.firstName} {user.lastName} - {user.providerId}
+					</p>
+				</div>
+			</Link>
+		));
+	};
 	return (
 		<>
 			<Head>
@@ -24,10 +55,11 @@ const Index: React.FC<IndexProps> = ({}) => {
 									type="text"
 									placeholder="Search…"
 									className="input input-bordered w-full"
-									onClick={() => {
-										console.log(
-											"-------------------------------------------------dsd"
-										);
+									onClick={(e) => {
+										handleSearch(query);
+									}}
+									onChange={(e) => {
+										handleSearch(e.target.value);
 									}}
 								/>
 								<button className="btn btn-square btn-primary">
@@ -49,16 +81,7 @@ const Index: React.FC<IndexProps> = ({}) => {
 							</div>
 						</section>
 						<section className="w-full h-auto flex-col gap-y-2 bg-white rounded-b-2xl">
-							<div className="w-full h-10 flex items-center gap-x-2 hover:bg-slate-400">
-								<p className="font-medium text-black text-base px-4">
-									Nguyen DUc Hanh
-								</p>
-							</div>
-							<div className="w-full h-10 flex items-center gap-x-2 hover:bg-slate-400">
-								<p className="font-medium text-black text-base px-4">
-									Nguyen DUc Hanh
-								</p>
-							</div>
+							{renderCert()}
 						</section>
 					</div>
 				</div>
