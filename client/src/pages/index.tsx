@@ -20,10 +20,10 @@ const Index: React.FC<IndexProps> = ({}) => {
 	};
 
 	const renderCert = () => {
-		if (certifications.length === 0) {
+		if (certifications && certifications.length === 0) {
 			return;
 		}
-		return certifications.map((user) => (
+		return certifications?.map((user) => (
 			<Link href={`cert/${user.providerId}`}>
 				<div
 					key={user.providerId}

@@ -33,7 +33,7 @@ services:
       - postgres-main
       - redis-main
     ports:
-      - 4000:4000
+      - 4001:4000
     networks:
       - main-network
     restart: unless-stopped
@@ -63,6 +63,8 @@ services:
       PGDATA: /data/postgres
     volumes:
       - postgres-volume:/data/postgres
+      - ./my.sql:/docker-entrypoint-initdb.d/my.sql.sql
+
     ports:
       - 5432:5432
     networks:
