@@ -63,8 +63,6 @@ services:
       PGDATA: /data/postgres
     volumes:
       - postgres-volume:/data/postgres
-      - ./my.sql:/docker-entrypoint-initdb.d/my.sql.sql
-
     ports:
       - 5432:5432
     networks:
