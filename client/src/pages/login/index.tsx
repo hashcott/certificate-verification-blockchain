@@ -31,7 +31,6 @@ type RegisterValues = {
 };
 
 const Login: React.FC<LoginProps> = ({}) => {
-	const [FormType, setFormType] = useState<"login" | "register">("login");
 	const [open, setOpen] = useState<boolean>(false);
 	const [ApiErrors, setAPIErrors] = useState<any>({});
 	const dispatch = useDispatch<Dispatch>();
@@ -80,60 +79,6 @@ const Login: React.FC<LoginProps> = ({}) => {
 		}
 	};
 
-	const registerValues: RegisterValues = {
-		email: "",
-		password: "",
-		firstName: "",
-		lastName: "",
-		displayName: "",
-	};
-	const registerSchema = Yup.object().shape({
-		email: Yup.string()
-			.email("Email should be email")
-			.required("Email cannot be empty or whitespace"),
-		password: Yup.string()
-			.required("Password cannot be empty or whitespace")
-			.min(6, "Password must be between 6 and 100 characters long")
-			.max(100, "Password must be between 6 and 100 characters long"),
-		firstName: Yup.string()
-			.required("First name cannot be empty or whitespace")
-			.min(2, "First name must be between 3 and 30 characters long")
-			.max(30, "First name must be between 3 and 30 characters long"),
-		lastName: Yup.string()
-			.required("Last name cannot be empty or whitespace")
-			.min(3, "Last name must be between 3 and 50 characters long")
-			.max(50, "Last name must be between 3 and 50 characters long"),
-		displayName: Yup.string()
-			.required("Display name cannot be empty or whitespace")
-			.min(3, "Display name must be between 3 and 30 characters long")
-			.max(50, "Display name must be between 3 and 30 characters long"),
-	});
-	const submitRegisterForm = async (
-		values: RegisterValues,
-		helpers: FormikHelpers<RegisterValues>
-	) => {
-		console.log(values);
-		setTimeout(() => helpers.setSubmitting(false), 2000);
-		try {
-			const res = await dispatch.user.localRegisterAsync(values);
-			if (res.errors) {
-				setAPIErrors(res.errors);
-				console.log(ApiErrors);
-			}
-
-			if (res.user) {
-				router.push("/me");
-			}
-		} catch (err: any) {
-			console.log("ERROR", err);
-		}
-	};
-
-	const changeForm = (formType: "login" | "register") => {
-		setAPIErrors({});
-		setFormType(formType);
-	};
-
 	return (
 		<>
 			<Head>
@@ -148,342 +93,118 @@ const Login: React.FC<LoginProps> = ({}) => {
 					</p>
 					<div className="box-border flex flex-wrap">
 						<button
-							onClick={() => changeForm("login")}
-							className={`flex-1 w-64 p-4 mr-4 text-center rounded-lg uppercase font-bold ${
-								FormType === "login" ? "bg-primary" : ""
-							}`}
+							className={`flex-1 w-64 p-4 mr-4 text-center rounded-lg uppercase font-bold bg-primary`}
 						>
-							Sign in
-						</button>
-						<button
-							onClick={() => changeForm("register")}
-							className={`flex-1 w-64 p-4 text-center rounded-lg uppercase font-bold ${
-								FormType === "register" ? "bg-primary" : ""
-							}`}
-						>
-							Sign up
+							Đăng nhập
 						</button>
 					</div>
-					{FormType && FormType === "login" ? (
-						<Formik
-							initialValues={loginValues}
-							onSubmit={submitLoginForm}
-							validationSchema={loginSchema}
-						>
-							{({
-								isSubmitting,
-								errors,
-								touched,
-							}: FormikState<LoginValues>) => (
-								<Form>
-									<div>
-										<div className="form-control">
-											<label className="label">
-												<span className="font-semibold label-text">
-													Email
-												</span>
-												<span className="font-medium label-text-alt">
-													e.g. john@gmail.com
-												</span>
-											</label>
-											<Field
-												placeholder="Enter your email"
-												type="email"
-												name="email"
-												className={`w-full p-3 transition duration-200 rounded input`}
-											/>
-											<label className="label">
-												{errors.email &&
-												touched.email ? (
-													<ErrorField
-														error={errors.email}
-													/>
-												) : null}
-												{ApiErrors.email &&
-												touched.email ? (
-													<ErrorField
-														error={ApiErrors.email}
-													/>
-												) : null}
-											</label>
-										</div>
+					<Formik
+						initialValues={loginValues}
+						onSubmit={submitLoginForm}
+						validationSchema={loginSchema}
+					>
+						{({
+							isSubmitting,
+							errors,
+							touched,
+						}: FormikState<LoginValues>) => (
+							<Form>
+								<div>
+									<div className="form-control">
+										<label className="label">
+											<span className="font-semibold label-text">
+												Email
+											</span>
+											<span className="font-medium label-text-alt">
+												e.g. john@gmail.com
+											</span>
+										</label>
+										<Field
+											placeholder="Enter your email"
+											type="email"
+											name="email"
+											className={`w-full p-3 transition duration-200 rounded input`}
+										/>
+										<label className="label">
+											{errors.email && touched.email ? (
+												<ErrorField
+													error={errors.email}
+												/>
+											) : null}
+											{ApiErrors.email &&
+											touched.email ? (
+												<ErrorField
+													error={ApiErrors.email}
+												/>
+											) : null}
+										</label>
 									</div>
-									<div>
-										<div className="form-control">
-											<label className="relative label">
-												<span className="font-semibold label-text">
-													Password
-												</span>
-												<span className="font-medium label-text-alt">
-													e.g. K3ybo@rdC@t
-												</span>
-												<div className="absolute text-2xl top-12 right-5">
-													{open === false ? (
-														<AiFillEye
-															onClick={toggle}
-														/>
-													) : (
-														<AiFillEyeInvisible
-															onClick={toggle}
-														/>
-													)}
-												</div>
-											</label>
-											<Field
-												placeholder="Enter your password"
-												type={
-													open === false
-														? "password"
-														: "text"
-												}
-												name="password"
-												className={`w-full p-3 transition duration-200 rounded input`}
-											/>
-
-											<label className="label">
-												{errors.password ? (
-													<ErrorField
-														error={errors.password}
+								</div>
+								<div>
+									<div className="form-control">
+										<label className="relative label">
+											<span className="font-semibold label-text">
+												Password
+											</span>
+											<span className="font-medium label-text-alt">
+												e.g. K3ybo@rdC@t
+											</span>
+											<div className="absolute text-2xl top-12 right-5">
+												{open === false ? (
+													<AiFillEye
+														onClick={toggle}
 													/>
-												) : null}
-												{ApiErrors.password ? (
-													<ErrorField
-														error={
-															ApiErrors.password
-														}
+												) : (
+													<AiFillEyeInvisible
+														onClick={toggle}
 													/>
-												) : null}
-											</label>
-										</div>
-									</div>
-									<div className="flex justify-between mb-5">
-										<Link href="/account/password/reset">
-											<div className="form-control">
-												<label className="cursor-pointer hover:underline">
-													<p>Forgot password?</p>
-												</label>
+												)}
 											</div>
-										</Link>
+										</label>
+										<Field
+											placeholder="Enter your password"
+											type={
+												open === false
+													? "password"
+													: "text"
+											}
+											name="password"
+											className={`w-full p-3 transition duration-200 rounded input`}
+										/>
+
+										<label className="label">
+											{errors.password ? (
+												<ErrorField
+													error={errors.password}
+												/>
+											) : null}
+											{ApiErrors.password ? (
+												<ErrorField
+													error={ApiErrors.password}
+												/>
+											) : null}
+										</label>
 									</div>
-									<button
-										type="submit"
-										disabled={isSubmitting}
-										className="w-full btn"
-									>
-										Submit
-									</button>
-								</Form>
-							)}
-						</Formik>
-					) : null}
-					{FormType && FormType === "register" ? (
-						<Formik
-							initialValues={registerValues}
-							onSubmit={submitRegisterForm}
-							validationSchema={registerSchema}
-						>
-							{({
-								isSubmitting,
-								errors,
-								touched,
-							}: FormikState<RegisterValues>) => (
-								<Form>
-									<div>
+								</div>
+								<div className="flex justify-between mb-5">
+									<Link href="/account/password/reset">
 										<div className="form-control">
-											<label className="label">
-												<span className="font-semibold label-text">
-													Email
-												</span>
-												<span className="font-medium label-text-alt">
-													e.g. john@gmail.com
-												</span>
-											</label>
-											<Field
-												placeholder="Enter your email"
-												type="email"
-												name="email"
-												className={`w-full p-3 transition duration-200 rounded input`}
-											/>
-											<label className="label">
-												{errors.email &&
-												touched.email ? (
-													<ErrorField
-														error={errors.email}
-													/>
-												) : null}
-												{ApiErrors.email &&
-												touched.email ? (
-													<ErrorField
-														error={ApiErrors.email}
-													/>
-												) : null}
+											<label className="cursor-pointer hover:underline">
+												<p>Forgot password?</p>
 											</label>
 										</div>
-									</div>
-									<div>
-										<div className="form-control">
-											<label className="relative label">
-												<span className="font-semibold label-text">
-													Password
-												</span>
-												<span className="font-medium label-text-alt">
-													e.g. K3ybo@rdC@t
-												</span>
-												<div className="absolute text-2xl top-12 right-5">
-													{open === false ? (
-														<AiFillEye
-															onClick={toggle}
-														/>
-													) : (
-														<AiFillEyeInvisible
-															onClick={toggle}
-														/>
-													)}
-												</div>
-											</label>
-											<Field
-												placeholder="Enter your password"
-												type={
-													open === false
-														? "password"
-														: "text"
-												}
-												name="password"
-												className={`w-full p-3 transition duration-200 rounded input`}
-											/>
-											<label className="label">
-												{errors.password ? (
-													<ErrorField
-														error={errors.password}
-													/>
-												) : null}
-												{ApiErrors.password ? (
-													<ErrorField
-														error={
-															ApiErrors.password
-														}
-													/>
-												) : null}
-											</label>
-										</div>
-									</div>
-									<div>
-										<div className="form-control">
-											<label className="label">
-												<span className="font-semibold label-text">
-													First name
-												</span>
-												<span className="font-medium label-text-alt">
-													e.g. John
-												</span>
-											</label>
-											<Field
-												placeholder="Enter your first name"
-												type="text"
-												name="firstName"
-												className={`w-full p-3 transition duration-200 rounded input`}
-											/>
-											<label className="label">
-												{errors.firstName &&
-												touched.firstName ? (
-													<ErrorField
-														error={errors.firstName}
-													/>
-												) : null}
-												{ApiErrors.firstName &&
-												touched.firstName ? (
-													<ErrorField
-														error={
-															ApiErrors.firstName
-														}
-													/>
-												) : null}
-											</label>
-										</div>
-									</div>
-									<div>
-										<div className="form-control">
-											<label className="label">
-												<span className="font-semibold label-text">
-													Last name
-												</span>
-												<span className="font-medium label-text-alt">
-													e.g. Kovalsky
-												</span>
-											</label>
-											<Field
-												placeholder="Enter your last name"
-												type="text"
-												name="lastName"
-												className={`w-full p-3 transition duration-200 rounded input`}
-											/>
-											<label className="label">
-												{errors.lastName &&
-												touched.lastName ? (
-													<ErrorField
-														error={errors.lastName}
-													/>
-												) : null}
-												{ApiErrors.lastName &&
-												touched.lastName ? (
-													<ErrorField
-														error={
-															ApiErrors.lastName
-														}
-													/>
-												) : null}
-											</label>
-										</div>
-									</div>
-									<div>
-										<div className="form-control">
-											<label className="label">
-												<span className="font-semibold label-text">
-													Display name
-												</span>
-												<span className="font-medium label-text-alt">
-													e.g. JohnKov1337
-												</span>
-											</label>
-											<Field
-												placeholder="Enter your nick name"
-												type="text"
-												name="displayName"
-												className={`w-full p-3 transition duration-200 rounded input`}
-											/>
-											<label className="label">
-												{errors.displayName &&
-												touched.displayName ? (
-													<ErrorField
-														error={
-															errors.displayName
-														}
-													/>
-												) : null}
-												{ApiErrors.nickName &&
-												touched.displayName ? (
-													<ErrorField
-														error={
-															ApiErrors.nickName
-														}
-													/>
-												) : null}
-											</label>
-										</div>
-									</div>
-									<button
-										type="submit"
-										disabled={isSubmitting}
-										className={`w-full btn ${
-											isSubmitting ? "btn loading" : ""
-										}`}
-									>
-										Submit
-									</button>
-								</Form>
-							)}
-						</Formik>
-					) : null}
+									</Link>
+								</div>
+								<button
+									type="submit"
+									disabled={isSubmitting}
+									className="w-full btn"
+								>
+									Submit
+								</button>
+							</Form>
+						)}
+					</Formik>
 					<div className="my-10 divider"></div>
 				</div>
 			</div>

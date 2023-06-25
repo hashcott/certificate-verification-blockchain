@@ -1,0 +1,14 @@
+{
+	"name": "contract",
+	"version": "1.0.0",
+	"main": "app.js",
+	"scripts": {
+		"start": "truffle exec app.js"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"@truffle/hdwallet-provider": "^2.1.12",
+		"bull": "^4.10.4",
+		"dotenv": "^16.3.1"
+	}
+}

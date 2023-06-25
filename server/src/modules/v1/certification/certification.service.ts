@@ -71,6 +71,7 @@ export class CertificationService {
 				...cert,
 				certificationStatus: CertificationStatus.VERIFIED
 			})
+
 			isCheck = true
 		}
 		return { isCheck }
