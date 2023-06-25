@@ -61,8 +61,8 @@ describe('UserService', () => {
 	})
 
 	it('Should create and return a user', async () => {
-		const { displayName, email, firstName, lastName, password } = LocalUser
-		const data = { displayName, email, firstName, lastName, password }
+		const { email, firstName, lastName, password } = LocalUser
+		const data = { email, firstName, lastName, password }
 		const user = await service.create(data)
 		userId = user.id
 		expect(user).toBeInstanceOf(User)

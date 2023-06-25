@@ -6,108 +6,22 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 
-import { Certification, User } from '../../../common/entities'
-import {
-	AccountStatus,
-	DegreeClassfication,
-	PostgresErrorCode,
-	Providers,
-	Role
-} from '../../../common/enums'
+import { User } from '../../../common/entities'
+import { AccountStatus, PostgresErrorCode, Role } from '../../../common/enums'
 import { UniqueViolation } from '../../../common/exceptions'
-import { Like, Repository } from 'typeorm'
-import { LocalFileDto } from 'common/dtos/localFile.dto'
-import { join } from 'path'
-import readXlsxFile from 'read-excel-file/node'
-import { LocalFilesService } from './localFiles.service'
+import { Repository } from 'typeorm'
+
 @Injectable()
 export class UserService {
 	constructor(
 		@InjectRepository(User)
-		private readonly userRepository: Repository<User>,
-		private localFilesService: LocalFilesService
+		private readonly userRepository: Repository<User>
 	) {}
 
-	public async create(data: Partial<User>, cert?: Certification) {
+	public async create(data: Partial<User>) {
 		const user = this.userRepository.create(data)
-		if (!data.providerId) {
-			user.providerId = user.id
-		}
-		if (cert) {
-			user.certification = cert
-		}
 		await this.userRepository.save(user)
 		return user
-	}
-	public async saveUsers(fileData: LocalFileDto) {
-		await this.localFilesService.saveLocalFileData(fileData)
-		const usersPromise: Promise<User>[] = []
-		try {
-			await readXlsxFile(join(process.cwd(), fileData.path)).then(
-				(rows) => {
-					rows.shift()
-					rows.forEach((row) => {
-						const [
-							provider,
-							providerId,
-							email,
-							firstName,
-							lastName,
-							password,
-							department,
-							className,
-							academicYear,
-							degreeClassfication
-						] = row
-						const certification = new Certification({
-							organizationName: provider as Providers,
-							academicYear: academicYear as string,
-							degreeClassfication:
-								degreeClassfication as DegreeClassfication
-						})
-						const user: Partial<User> = {
-							provider: provider as Providers,
-							providerId: providerId as string,
-							displayName: providerId as string,
-							email: email as string,
-							firstName: firstName as string,
-							lastName: lastName as string,
-							password: password as string,
-							department: department as string,
-							class: className as string
-						}
-						usersPromise.push(this.create(user, certification))
-					})
-				}
-			)
-
-			const users = await Promise.all(usersPromise)
-			return users
-		} catch (error) {
-			throw error
-		}
-	}
-
-	public async list() {
-		const users = await this.userRepository.find({
-			where: {
-				role: Role.USER
-			},
-			relations: {
-				certification: true
-			},
-			select: [
-				'providerId',
-				'email',
-				'firstName',
-				'lastName',
-				'department',
-				'class',
-				'certification'
-			]
-		})
-
-		return users
 	}
 
 	public async listManager() {
@@ -119,32 +33,6 @@ export class UserService {
 		})
 
 		return users
-	}
-
-	public async searchUsers(searchQuery: string) {
-		const user = await this.userRepository.find({
-			where: [
-				{ role: Role.USER, providerId: Like(`%${searchQuery}%`) },
-				{ role: Role.USER, email: Like(`%${searchQuery}%`) },
-				{ role: Role.USER, firstName: Like(`%${searchQuery}%`) },
-				{ role: Role.USER, lastName: Like(`%${searchQuery}%`) }
-			],
-			relations: {
-				certification: true
-			},
-			take: 5
-		})
-		return user
-	}
-
-	public async getOne(id: string) {
-		const user = await this.userRepository.findOne({
-			where: [{ role: Role.USER, providerId: id }],
-			relations: {
-				certification: true
-			}
-		})
-		return user
 	}
 
 	public async update(userId: string, values: QueryDeepPartialEntity<User>) {
@@ -176,10 +64,6 @@ export class UserService {
 			if (err.code == PostgresErrorCode.UniqueViolation) {
 				if (err.detail.includes('email')) {
 					throw new UniqueViolation('email')
-				}
-
-				if (err.detail.includes('nick_name' || 'nick' || 'nickName')) {
-					throw new UniqueViolation('displayName')
 				}
 			}
 			throw new InternalServerErrorException()
@@ -219,7 +103,6 @@ export class UserService {
 				password: req.user.password,
 				firstName: req.user.firstName,
 				lastName: req.user.lastName,
-				displayName: req.user.displayName,
 				image: req.user.image,
 				accountStatus: AccountStatus.VERIFIED
 			})

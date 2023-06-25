@@ -11,7 +11,7 @@ interface StatisticProps {}
 
 const Statistic: React.FC<StatisticProps> = ({}) => {
 	let userState = useSelector((state: RootState) => state.user);
-	const { user, authenticated, student, manager } = userState;
+	const { user, authenticated, certifications, manager } = userState;
 	const router = useRouter();
 
 	return (
@@ -37,7 +37,7 @@ const Statistic: React.FC<StatisticProps> = ({}) => {
 										Tổng số bằng câp
 									</div>
 									<div className="px-4 py-2">
-										{student.length}
+										{certifications.length}
 									</div>
 								</div>
 								<div className="grid grid-cols-2">
@@ -54,10 +54,9 @@ const Statistic: React.FC<StatisticProps> = ({}) => {
 									</div>
 									<div className="px-4 py-2">
 										{
-											student.filter(
-												(user) =>
-													user.certification
-														.certificationStatus ===
+											certifications.filter(
+												(certification) =>
+													certification.certificationStatus ===
 													CertificationStatus.VERIFIED
 											).length
 										}
@@ -69,10 +68,9 @@ const Statistic: React.FC<StatisticProps> = ({}) => {
 									</div>
 									<div className="px-4 py-2">
 										{
-											student.filter(
-												(user) =>
-													user.certification
-														.certificationStatus ===
+											certifications.filter(
+												(certification) =>
+													certification.certificationStatus ===
 													CertificationStatus.PENDING
 											).length
 										}
@@ -84,10 +82,9 @@ const Statistic: React.FC<StatisticProps> = ({}) => {
 									</div>
 									<div className="px-4 py-2">
 										{
-											student.filter(
-												(user) =>
-													user.certification
-														.certificationStatus ===
+											certifications.filter(
+												(certification) =>
+													certification.certificationStatus ===
 													CertificationStatus.BANNED
 											).length
 										}

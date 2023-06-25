@@ -1,15 +1,8 @@
 import { Exclude } from 'class-transformer'
-import {
-	BeforeInsert,
-	Column,
-	Entity,
-	Index,
-	JoinColumn,
-	OneToOne
-} from 'typeorm'
+import { BeforeInsert, Column, Entity, Index } from 'typeorm'
 import * as argon2 from 'argon2'
 
-import { AbstractEntity, Certification } from './'
+import { AbstractEntity } from './'
 import { Providers, AccountStatus, Role, Position } from '../enums'
 
 @Entity()
@@ -62,14 +55,6 @@ export class User extends AbstractEntity<User> {
 	public lastName: string
 
 	@Column({
-		unique: true,
-		length: 200,
-		name: 'nick_name',
-		nullable: false
-	})
-	public displayName: string
-
-	@Column({
 		length: 400,
 		name: 'image',
 		nullable: true,
@@ -102,24 +87,6 @@ export class User extends AbstractEntity<User> {
 		enum: AccountStatus
 	})
 	public accountStatus: AccountStatus
-
-	@Column({
-		name: 'department',
-		length: 256,
-		default: null
-	})
-	public department: string
-
-	@Column({
-		name: 'class',
-		length: 256,
-		default: null
-	})
-	public class: string
-
-	@OneToOne(() => Certification, (cert) => cert.user, { cascade: ['insert'] })
-	@JoinColumn()
-	public certification: Certification
 
 	@BeforeInsert()
 	async hashPassword() {

@@ -36,44 +36,41 @@ const User: React.FC<UserProps> = ({}) => {
 				<meta name="description" content="Profile page" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Container>
-				{authenticated && user !== null ? (
-					<>
-						<div className="p-3 rounded-lg shadow-sm bg-base-300">
-							<div className="flex items-center space-x-2 font-semibold leading-8">
-								<span className="text-lg">
-									<BsInfoLg />
-								</span>
-								<div className="tabs">
-									<a
-										onClick={() => setTab(TabUser.LIST)}
-										className={`tab tab-lifted ${
-											tab === TabUser.LIST && "tab-active"
-										}`}
-									>
-										Danh sách
-									</a>
-									<a
-										onClick={() => setTab(TabUser.CREATE)}
-										className={`tab tab-lifted ${
-											tab === TabUser.CREATE &&
-											"tab-active"
-										}`}
-									>
-										Tạo mới
-									</a>
-								</div>
-							</div>
-							<div className="w-full">
-								{tab === TabUser.LIST && <ListUser />}
-							</div>
-							<div>
-								{tab === TabUser.CREATE && <CreateUserForm />}
+			{authenticated && user !== null ? (
+				<>
+					<div className="p-3 rounded-lg shadow-sm bg-base-300">
+						<div className="flex items-center space-x-2 font-semibold leading-8">
+							<span className="text-lg">
+								<BsInfoLg />
+							</span>
+							<div className="tabs">
+								<a
+									onClick={() => setTab(TabUser.LIST)}
+									className={`tab tab-lifted ${
+										tab === TabUser.LIST && "tab-active"
+									}`}
+								>
+									Danh sách
+								</a>
+								<a
+									onClick={() => setTab(TabUser.CREATE)}
+									className={`tab tab-lifted ${
+										tab === TabUser.CREATE && "tab-active"
+									}`}
+								>
+									Tạo mới
+								</a>
 							</div>
 						</div>
-					</>
-				) : null}
-			</Container>
+						<div className="w-full">
+							{tab === TabUser.LIST && <ListUser />}
+						</div>
+						<div>
+							{tab === TabUser.CREATE && <CreateUserForm />}
+						</div>
+					</div>
+				</>
+			) : null}
 		</>
 	);
 };

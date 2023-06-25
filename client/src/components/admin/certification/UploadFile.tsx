@@ -19,6 +19,7 @@ const UploadFile: FunctionComponent<IUploadFile> = ({
 	return (
 		<div>
 			<input
+				className="file-input w-full max-w-xs"
 				type="file"
 				name="file"
 				// set supported file types here,

@@ -1,5 +1,5 @@
 export enum Method {
-	CONFIRM = 'confirm',
-	UNCONFIRM = 'unconfirm',
-	UPDATE = 'update'
+	CONFIRM = 'Confirm',
+	UNCONFIRM = 'Unconfirm',
+	UPDATE = 'Update'
 }

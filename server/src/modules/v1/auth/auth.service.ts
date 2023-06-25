@@ -125,7 +125,7 @@ export class AuthService {
 
 		const accessToken = await this.jwtService.signAsync(
 			{
-				displayName: user.displayName,
+				displayName: user.lastName + ' ' + user.firstName,
 				id: user.id
 			},
 			{
@@ -137,7 +137,7 @@ export class AuthService {
 
 		const refreshToken = await this.jwtService.signAsync(
 			{
-				displayName: user.displayName,
+				displayName: user.lastName + ' ' + user.firstName,
 				id: user.id
 			},
 			{

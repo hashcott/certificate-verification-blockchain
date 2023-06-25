@@ -41,14 +41,6 @@ const Me: React.FC<MeProps> = ({}) => {
 												/>
 											</div>
 										</div>
-										<div className="flex flex-col justify-center mx-auto align-center">
-											<h1 className="mb-4 font-bold text-md">
-												{user.displayName}
-											</h1>
-											<h1 className="text-md">
-												{user.role}
-											</h1>
-										</div>
 									</div>
 									<ul className="px-3 py-2 mt-3 divide-y rounded shadow-sm hover:shadow">
 										<li className="flex items-center py-3">
@@ -117,14 +109,6 @@ const Me: React.FC<MeProps> = ({}) => {
 											</div>
 											<div className="grid grid-cols-2">
 												<div className="px-4 py-2 font-semibold">
-													Nick name
-												</div>
-												<div className="px-4 py-2">
-													{user.displayName}
-												</div>
-											</div>
-											<div className="grid grid-cols-2">
-												<div className="px-4 py-2 font-semibold">
 													Email
 												</div>
 												<div className="px-4 py-2">
@@ -143,11 +127,10 @@ const Me: React.FC<MeProps> = ({}) => {
 											</div>
 											<div className="grid grid-cols-2">
 												<div className="px-4 py-2 font-semibold">
-													Student code
+													Vị trí
 												</div>
 												<div className="px-4 py-2">
-													{user.providerId ||
-														"Same as user ID"}
+													{user.position}
 												</div>
 											</div>
 										</div>

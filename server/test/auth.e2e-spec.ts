@@ -96,20 +96,12 @@ describe('AuthController (e2e)', () => {
 				.send(mockLocalUser)
 				.expect((response: request.Response) => {
 					const { user } = response.body
-					const {
-						id,
-						email,
-						password,
-						firstName,
-						lastName,
-						displayName
-					} = user
+					const { id, email, password, firstName, lastName } = user
 
 					expect(typeof id).toBe('string')
 					expect(firstName).toEqual(mockLocalUser.firstName),
 						expect(lastName).toEqual(mockLocalUser.lastName),
-						expect(displayName).toEqual(mockLocalUser.displayName)
-					expect(email).toEqual(mockLocalUser.email),
+						expect(email).toEqual(mockLocalUser.email),
 						expect(password).toBeUndefined()
 				})
 				.expect(HttpStatus.CREATED)
@@ -131,20 +123,12 @@ describe('AuthController (e2e)', () => {
 				})
 				.expect((response: request.Response) => {
 					const { user } = response.body
-					const {
-						id,
-						email,
-						password,
-						firstName,
-						lastName,
-						displayName
-					} = user
+					const { id, email, password, firstName, lastName } = user
 
 					expect(typeof id).toBe('string')
 					expect(firstName).toEqual(mockLocalUser.firstName),
 						expect(lastName).toEqual(mockLocalUser.lastName),
-						expect(displayName).toEqual(mockLocalUser.displayName)
-					expect(email).toEqual(mockLocalUser.email),
+						expect(email).toEqual(mockLocalUser.email),
 						expect(password).toBeUndefined()
 				})
 				.expect(HttpStatus.OK)

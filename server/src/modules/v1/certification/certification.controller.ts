@@ -1,11 +1,22 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Param,
+	Patch,
+	UseGuards,
+	Post,
+	UploadedFile,
+	UseInterceptors,
+	Query
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { CertificationService } from './certification.service'
 import { CurrentUser, Roles } from '../../../common/decorators'
 import { Role } from '../../../common/enums'
-import { JwtAuthGuard, VerifiedGuard } from '../../../common/guards'
-
+import { JwtAuthGuard, RolesGuard, VerifiedGuard } from '../../../common/guards'
+import LocalFilesInterceptor from 'common/interceptor/localFiles.interceptor'
 @ApiTags('v1/certification')
 @Controller({
 	path: 'certification',
@@ -39,5 +50,38 @@ export class CertificationController {
 	@Get()
 	listCerts() {
 		return this.certificationervice.listCerts()
+	}
+
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles(Role.ADMIN, Role.MODERATOR)
+	@Get('list')
+	listUser() {
+		return this.certificationervice.list()
+	}
+
+	@Get('getOne')
+	getOne(@Param('providerId') providerId: string) {
+		return this.certificationervice.getOne(providerId)
+	}
+
+	@Get('search')
+	search(@Query('q') query) {
+		return this.certificationervice.search(query)
+	}
+	@Post('xlsx')
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles(Role.ADMIN)
+	@UseInterceptors(
+		LocalFilesInterceptor({
+			fieldName: 'file',
+			path: ''
+		})
+	)
+	async saveCerts(@UploadedFile() file: Express.Multer.File) {
+		return this.certificationervice.saveCerts({
+			path: file.path,
+			filename: file.originalname,
+			mimetype: file.mimetype
+		})
 	}
 }

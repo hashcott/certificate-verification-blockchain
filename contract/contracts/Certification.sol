@@ -8,7 +8,7 @@ contract Certification {
 		string studentCode;
 		string citizenIdentificationCode;
 		string birth;
-		string sex;
+		string gender	;
 		string degreeClassification;
 		string academicYear;
 		address verifiedBy;
@@ -36,7 +36,7 @@ contract Certification {
 		string memory studentCode,
 		string memory citizenIdentificationCode,
 		string memory birth,
-		string memory sex,
+		string memory gender,
 		string memory degreeClassification,
 		string memory academicYear
 	) external {
@@ -52,7 +52,7 @@ contract Certification {
 
 		certificate.birth = birth;
 
-		certificate.sex = sex;
+		certificate.gender = gender;
 
 		certificate.degreeClassification = degreeClassification;
 

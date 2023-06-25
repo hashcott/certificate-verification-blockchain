@@ -1,12 +1,9 @@
 import Head from "next/head";
-import Image from "next/image";
-import { BsInfoLg } from "react-icons/bs";
+
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
 
 import { useEffect } from "react";
 import { Dispatch, RootState } from "../../../store/store";
-import { Container } from "../../Container";
 import { AuthOption, withAuth } from "../../../utils/withAuth";
 
 interface UserProps {}

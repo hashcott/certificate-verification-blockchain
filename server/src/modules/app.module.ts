@@ -4,7 +4,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { APP_GUARD } from '@nestjs/core'
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis'
-import { BullModule } from '@nestjs/bull'
 import { V1Module } from './v1/v1.module'
 import { MainController } from './app.controller'
 
@@ -49,16 +48,6 @@ import { Certification } from 'common/entities/certification.entity'
 					}
 				}
 			}
-		}),
-		BullModule.forRootAsync({
-			imports: [ConfigModule],
-			useFactory: async (configService: ConfigService) => ({
-				redis: {
-					host: configService.get('REDIS_HOST'),
-					port: configService.get('REDIS_HOST')
-				}
-			}),
-			inject: [ConfigService]
 		}),
 		V1Module
 	],

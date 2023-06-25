@@ -2,8 +2,17 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 import { Certification, User } from '../../../common/entities'
-import { Repository } from 'typeorm'
+import { Repository, Like } from 'typeorm'
 import { CertificationStatus, Position } from 'common/enums'
+import { InjectQueue } from '@nestjs/bull'
+import { Queue } from 'bull'
+
+import { DegreeClassification } from '../../../common/enums'
+import { LocalFileDto } from 'common/dtos/localFile.dto'
+import { join } from 'path'
+import readXlsxFile from 'read-excel-file/node'
+import { LocalFilesService } from './localFiles.service'
+import { CertificationDto } from 'common/dtos'
 
 @Injectable()
 export class CertificationService {
@@ -11,16 +20,23 @@ export class CertificationService {
 		@InjectRepository(Certification)
 		private readonly certificationRepository: Repository<Certification>,
 		@InjectRepository(User)
-		private readonly userRepository: Repository<User>
+		private readonly userRepository: Repository<User>,
+		private localFilesService: LocalFilesService,
+		@InjectQueue('cert') private addCertQueue: Queue
 	) {}
-
-	public async getCertification(id: string) {
-		return []
-	}
 
 	public async listCerts() {
 		const certs = await this.certificationRepository.find()
 		return certs
+	}
+
+	public async create(certDto: CertificationDto) {
+		try {
+			const cert = await this.certificationRepository.save(certDto)
+			return cert
+		} catch (error) {
+			throw new Error('Cannt save ' + certDto.studentCode)
+		}
 	}
 
 	public async confirm(idUser: string, providerId: string) {
@@ -34,47 +50,39 @@ export class CertificationService {
 			throw new Error('User managemnet not found')
 		}
 
-		const user = await this.userRepository.findOne({
+		const cert = await this.certificationRepository.findOne({
 			where: {
-				providerId: providerId
-			},
-			relations: {
-				certification: true
+				studentCode: providerId
 			}
 		})
+		if (cert) {
+			if (cert.certificationStatus === CertificationStatus.VERIFIED) {
+				throw new Error('Saved to blockchain, cannt modifier')
+			}
 
-		if (
-			user.certification.certificationStatus ===
-			CertificationStatus.VERIFIED
-		) {
-			throw new Error('Saved to blockchain, cannt modifier')
-		}
-
-		if (!user) {
-			throw new Error('User not found')
-		}
-
-		const cert = await this.certificationRepository.save({
-			...user.certification,
-			[`isVerifiedBy${mod.position}`]: true
-		})
-		let isCheck = false
-		if (
-			cert[`isVerifiedBy${Position.DAOTAO}`] &&
-			cert[`isVerifiedBy${Position.HT}`] &&
-			cert[`isVerifiedBy${Position.KHOA}`] &&
-			cert[`isVerifiedBy${Position.KTX}`] &&
-			cert[`isVerifiedBy${Position.TAIVU}`] &&
-			cert[`isVerifiedBy${Position.THUVIEN}`]
-		) {
-			await this.certificationRepository.save({
+			let updateCert = await this.certificationRepository.save({
 				...cert,
-				certificationStatus: CertificationStatus.VERIFIED
+				[`isVerifiedBy${mod.position}`]: true
 			})
+			if (
+				updateCert[`isVerifiedBy${Position.DAOTAO}`] &&
+				updateCert[`isVerifiedBy${Position.HT}`] &&
+				updateCert[`isVerifiedBy${Position.KHOA}`] &&
+				updateCert[`isVerifiedBy${Position.KTX}`] &&
+				updateCert[`isVerifiedBy${Position.TAIVU}`] &&
+				updateCert[`isVerifiedBy${Position.THUVIEN}`]
+			) {
+				updateCert = await this.certificationRepository.save({
+					...cert,
+					certificationStatus: CertificationStatus.VERIFIED
+				})
 
-			isCheck = true
+				await this.addCertQueue.add({
+					...updateCert
+				})
+			}
+			return updateCert
 		}
-		return { isCheck }
 	}
 
 	public async unconfirm(idUser: string, providerId: string) {
@@ -88,23 +96,89 @@ export class CertificationService {
 			throw new Error('User managemnet not found')
 		}
 
-		const user = await this.userRepository.findOne({
+		const cert = await this.certificationRepository.findOne({
 			where: {
-				providerId: providerId
-			},
-			relations: {
-				certification: true
+				studentCode: providerId
 			}
 		})
-
-		if (!user) {
-			throw new Error('User not found')
+		if (cert) {
+			if (cert.certificationStatus === CertificationStatus.VERIFIED) {
+				throw new Error('Saved to blockchain, cannt modifier')
+			}
+			await this.certificationRepository.save({
+				...cert,
+				[`isVerifiedBy${mod.position}`]: false
+			})
+			return cert
 		}
+		return null
+	}
 
-		await this.certificationRepository.save({
-			...user.certification,
-			[`isVerifiedBy${mod.position}`]: true
+	public async saveCerts(fileData: LocalFileDto) {
+		await this.localFilesService.saveLocalFileData(fileData)
+		const certPromise: Promise<CertificationDto>[] = []
+		try {
+			await readXlsxFile(join(process.cwd(), fileData.path)).then(
+				(rows) => {
+					rows.shift()
+					rows.forEach((row) => {
+						const [
+							firstName,
+							lastName,
+							studentCode,
+							citizenIdentificationCode,
+							birth,
+							gender,
+							degreeClassification,
+							academicYear
+						] = row
+						const certification = {
+							firstName: firstName as string,
+							lastName: lastName as string,
+							studentCode: studentCode as string,
+							citizenIdentificationCode:
+								citizenIdentificationCode as string,
+							birth: birth as string,
+							gender: gender as string,
+							degreeClassification:
+								degreeClassification as DegreeClassification,
+							academicYear: academicYear as string
+						} as CertificationDto
+
+						certPromise.push(this.create(certification))
+					})
+				}
+			)
+
+			const users = await Promise.all(certPromise)
+			return users
+		} catch (error) {
+			throw error
+		}
+	}
+
+	public async list() {
+		const certs = await this.certificationRepository.find()
+		return certs
+	}
+
+	public async search(searchQuery: string) {
+		const cert = await this.certificationRepository.find({
+			where: [
+				{ citizenIdentificationCode: Like(`%${searchQuery}%`) },
+				{ studentCode: Like(`%${searchQuery}%`) },
+				{ firstName: Like(`%${searchQuery}%`) },
+				{ lastName: Like(`%${searchQuery}%`) }
+			],
+			take: 5
 		})
-		return true
+		return cert
+	}
+
+	public async getOne(id: string) {
+		const cert = await this.certificationRepository.findOne({
+			where: { id }
+		})
+		return cert
 	}
 }

@@ -22,14 +22,6 @@ type LoginValues = {
 	password: string;
 };
 
-type RegisterValues = {
-	email: string;
-	password: string;
-	firstName: string;
-	lastName: string;
-	displayName: string;
-};
-
 const Login: React.FC<LoginProps> = ({}) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [ApiErrors, setAPIErrors] = useState<any>({});

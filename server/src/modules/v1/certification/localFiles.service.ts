@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { LocalFileDto } from 'common/dtos/localFile.dto'
 import { LocalFile } from 'common/entities'
-import { LocalFileRepository } from './repositories/localFilee.repository'
+import { LocalFileRepository } from '../user/repositories/localFilee.repository'
 
 @Injectable()
 export class LocalFilesService {

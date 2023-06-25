@@ -11,7 +11,6 @@ import {
 	UseInterceptors
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { Express } from 'express'
 import { UserService } from './user.service'
 import {
 	CurrentUser,
@@ -21,7 +20,6 @@ import {
 import { AccountStatus, Role } from '../../../common/enums'
 import { JwtAuthGuard, RolesGuard, VerifiedGuard } from '../../../common/guards'
 import { UpdateUserDto } from '../../../common/dtos'
-import LocalFilesInterceptor from 'common/interceptor/localFiles.interceptor'
 
 @ApiTags('v1/user')
 @Controller({
@@ -41,43 +39,9 @@ export class UserController {
 	}
 
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Roles(Role.ADMIN, Role.MODERATOR)
-	@Get('list')
-	listUser() {
-		return this.userService.list()
-	}
-
-	@Get('getOne')
-	getOne(@Param('providerId') providerId: string) {
-		return this.userService.getOne(providerId)
-	}
-
-	@Get('search')
-	search(@Query('q') query) {
-		return this.userService.searchUsers(query)
-	}
-
-	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles(Role.ADMIN)
 	@Get('list-manager')
 	listManager() {
 		return this.userService.listManager()
-	}
-
-	@Post('xlsx')
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Roles(Role.ADMIN)
-	@UseInterceptors(
-		LocalFilesInterceptor({
-			fieldName: 'file',
-			path: ''
-		})
-	)
-	async saveUsers(@UploadedFile() file: Express.Multer.File) {
-		return this.userService.saveUsers({
-			path: file.path,
-			filename: file.originalname,
-			mimetype: file.mimetype
-		})
 	}
 }

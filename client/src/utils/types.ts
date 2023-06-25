@@ -35,12 +35,10 @@ export interface User {
 	email: string;
 	firstName: string;
 	lastName: string;
-	displayName: string;
 	image: string;
 	role: Role;
 	position: Position;
 	accountStatus: AccountStatus;
-	certification: Certification;
 }
 export enum CertificationStatus {
 	PENDING = "pending",
@@ -48,15 +46,22 @@ export enum CertificationStatus {
 	BANNED = "banned",
 }
 
-export enum DegreeClassfication {
-	EXCELLENT = "excellent",
-	GOOD = "good",
+export enum DegreeClassification {
+	Excellent = 1,
+	Good = 2,
+	FairlyGood = 3,
+	Average = 4,
 }
-
 export interface Certification {
-	organizationName: string;
+	id: string;
+	firstName: string;
+	lastName: string;
+	studentCode: string;
+	citizenIdentificationCode: string;
+	birth: string;
+	gender: string;
 	academicYear: string;
-	degreeClassfication: DegreeClassfication;
+	degreeClassification: DegreeClassification;
 	certificationStatus: CertificationStatus;
 	isVerifiedByKHOA: boolean;
 	isVerifiedByDAOTAO: boolean;
@@ -64,40 +69,4 @@ export interface Certification {
 	isVerifiedByHT: boolean;
 	isVerifiedByTHUVIEN: boolean;
 	isVerifiedByKTX: boolean;
-}
-
-export interface Room {
-	id: string;
-	createdAt: string;
-	updatedAt: string;
-	name: string;
-	description: string;
-	is: boolean;
-	users: User[];
-	mods: User[];
-	owner: User;
-	messages: Message[];
-	invitations: Invitation[];
-}
-
-export interface Message {
-	id: string;
-	createdAt: string;
-	updatedAt: string;
-	text: string;
-	edited: boolean;
-	author: {
-		id: string;
-		displayName: string;
-	};
-	room: {
-		id: string;
-		name: string;
-	};
-}
-
-export interface Invitation {
-	id: string;
-	createdAt: string;
-	updatedAt: string;
 }

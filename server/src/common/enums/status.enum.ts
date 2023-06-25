@@ -10,7 +10,9 @@ export enum CertificationStatus {
 	BANNED = 'banned'
 }
 
-export enum DegreeClassfication {
-	EXCELLENT = 'excellent',
-	GOOD = 'good'
+export enum DegreeClassification {
+	Excellent = 1,
+	Good = 2,
+	FairlyGood = 3,
+	Average = 4
 }

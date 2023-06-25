@@ -74,6 +74,7 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({}) => {
 						setFieldValue={formik.setFieldValue}
 					/>
 					<button
+						className="btn mt-5"
 						onClick={() => formik.handleSubmit()}
 						disabled={
 							!formik.isValid ||

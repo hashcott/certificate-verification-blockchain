@@ -8,7 +8,6 @@ import {
 	Post,
 	Query,
 	Req,
-	Res,
 	UseGuards
 } from '@nestjs/common'
 import {
@@ -17,7 +16,7 @@ import {
 	ApiOkResponse,
 	ApiTags
 } from '@nestjs/swagger'
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import { SkipThrottle } from '@nestjs/throttler'
 
 import { AuthService } from './auth.service'

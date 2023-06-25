@@ -2,23 +2,23 @@ import { createModel } from "@rematch/core";
 import axios, { AxiosError } from "axios";
 
 import { RootModel } from ".";
-import { CertificationStatus, User } from "../../utils/types";
+import { Certification, CertificationStatus, User } from "../../utils/types";
 
 interface UserState {
 	authenticated: boolean;
 	user: User | null;
 	manager: User[];
-	student: User[];
-	certifications: User[];
-	currentCert: User | null;
+	certifications: Certification[];
+	certificationsFound: Certification[];
+	currentCert: Certification | null;
 }
 
 const initialState: UserState = {
 	authenticated: false,
 	user: null,
 	manager: [],
-	student: [],
 	certifications: [],
+	certificationsFound: [],
 	currentCert: null,
 };
 
@@ -39,45 +39,45 @@ export const user = createModel<RootModel>()({
 				manager: payload,
 			};
 		},
-		SET_STUDENT: (state, payload) => {
+		SET_CERT: (state, payload) => {
 			return {
 				...state,
-				student: payload,
+				certifications: payload,
 			};
 		},
-		UPDATE_STUDENT: (state, payload) => {
+		UPDATE_CERT: (state, payload) => {
 			return {
 				...state,
-				student: [...state.student, ...payload],
+				certifications: [...state.certifications, ...payload],
+			};
+		},
+		UPDATE_CERT_FOUND: (state, payload) => {
+			return {
+				...state,
+				certificationsFound: payload,
 			};
 		},
 		UPDATE_CERT_STATUS: (state, payload) => {
-			const student = state.student.find(
-				({ providerId }) => providerId === payload.providerId
+			const cert = state.certifications.find(
+				({ studentCode }) => studentCode === payload.providerId
 			);
-			if (student && state.user?.position) {
-				student.certification[`isVerifiedBy${state.user?.position}`] =
-					payload.status;
+			console.log(cert);
+
+			if (cert && state.user?.position) {
+				cert[`isVerifiedBy${state.user?.position}`] = payload.status;
 			}
-			if (student && payload.isCheck) {
-				student.certification["certificationStatus"] =
-					CertificationStatus.VERIFIED;
+			if (cert && payload.isCheck) {
+				cert["certificationStatus"] = CertificationStatus.VERIFIED;
 			}
 			return {
 				...state,
-				student: [...state.student],
+				certifications: [...state.certifications],
 			};
 		},
 		UPDATE_MANAGER: (state, payload) => {
 			return {
 				...state,
 				manager: [...state.manager, payload],
-			};
-		},
-		SET_CERT: (state, payload) => {
-			return {
-				...state,
-				certifications: payload,
 			};
 		},
 		SET_CURRENTCERT: (state, payload) => {
@@ -120,7 +120,6 @@ export const user = createModel<RootModel>()({
 			password = "123456",
 			firstName,
 			lastName,
-			displayName,
 			role,
 			position,
 		}) {
@@ -130,7 +129,6 @@ export const user = createModel<RootModel>()({
 					password,
 					firstName,
 					lastName,
-					displayName,
 					role,
 					position,
 				});
@@ -144,11 +142,6 @@ export const user = createModel<RootModel>()({
 				}
 				return err;
 			}
-		},
-		async socialLoginAsync() {
-			let { data } = await axios.get("/auth/me");
-			console.log(data);
-			dispatch.user.SET_USER(data.user);
 		},
 		async logoutAsync() {
 			try {
@@ -193,9 +186,9 @@ export const user = createModel<RootModel>()({
 
 		async listStudentWithCert() {
 			try {
-				let { data } = await axios.get("/user/list");
+				let { data } = await axios.get("/certification/list");
 				console.log(data);
-				dispatch.user.SET_STUDENT(data);
+				dispatch.user.SET_CERT(data);
 				console.log("Reconnected");
 			} catch (err) {
 				console.log(`Get list managers error`);
@@ -207,12 +200,16 @@ export const user = createModel<RootModel>()({
 				const formData = new FormData();
 				formData.append("file", file);
 
-				let { data } = await axios.post("/user/xlsx", formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-				});
-				dispatch.user.UPDATE_STUDENT(data);
+				let { data } = await axios.post(
+					"/certification/xlsx",
+					formData,
+					{
+						headers: {
+							"Content-Type": "multipart/form-data",
+						},
+					}
+				);
+				dispatch.user.UPDATE_CERT(data);
 				console.log("Reconnected");
 			} catch (err) {
 				console.log(`Get list managers error`);
@@ -224,14 +221,10 @@ export const user = createModel<RootModel>()({
 				let { data } = await axios.patch("/certification/confirm", {
 					providerId,
 				});
-				if (data && data.isCheck) {
-					dispatch.user.UPDATE_CERT_STATUS({
-						providerId,
-						status: true,
-						isCheck: true,
-					});
-				}
-				if (data && !data.isCheck) {
+				if (
+					data &&
+					data.certificationStatus != CertificationStatus.VERIFIED
+				) {
 					dispatch.user.UPDATE_CERT_STATUS({
 						providerId,
 						status: true,
@@ -266,7 +259,7 @@ export const user = createModel<RootModel>()({
 					},
 				});
 				if (data) {
-					dispatch.user.SET_CERT(data);
+					dispatch.user.UPDATE_CERT_FOUND(data);
 				}
 				console.log("Found ", data.length);
 			} catch (err) {
@@ -275,7 +268,7 @@ export const user = createModel<RootModel>()({
 		},
 		async getCert({ providerId }) {
 			try {
-				let { data } = await axios.get("/user/getOne", {
+				let { data } = await axios.get("/certification/getOne", {
 					params: {
 						providerId,
 					},

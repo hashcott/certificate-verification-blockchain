@@ -15,7 +15,6 @@ interface CreateUserFormProps {}
 type CreateValues = {
 	firstName: string | null;
 	lastName: string | null;
-	displayName: string | null;
 	email: string | null;
 	role: Role | null;
 	position: Position | null;
@@ -29,7 +28,6 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({}) => {
 	let createValues: CreateValues = {
 		firstName: "",
 		lastName: "",
-		displayName: "",
 		email: "",
 		role: Role.MODERATOR,
 		position: Position.DAOTAO,
@@ -44,10 +42,6 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({}) => {
 			.required("Last name cannot be empty or whitespace")
 			.min(3, "Last name must be between 3 and 50 characters long")
 			.max(50, "Last name must be between 3 and 50 characters long"),
-		displayName: Yup.string()
-			.required("Display name cannot be empty or whitespace")
-			.min(3, "Display name must be between 3 and 30 characters long")
-			.max(50, "Display name must be between 3 and 30 characters long"),
 		email: Yup.string()
 			.email()
 			.required("Email cannot be empty or whitespace"),
@@ -150,38 +144,6 @@ const CreateUserForm: React.FC<CreateUserFormProps> = ({}) => {
 											touched.lastName ? (
 												<ErrorField
 													error={ApiErrors.lastName}
-												/>
-											) : null}
-										</label>
-									</div>
-								</div>
-								<div>
-									<div className="form-control">
-										<label className="label">
-											<span className="font-semibold label-text">
-												Tên hiển thị
-											</span>
-										</label>
-										<Field
-											placeholder="Enter your nick name"
-											type="text"
-											name="displayName"
-											className={`w-full p-3 transition duration-200 rounded input`}
-										/>
-										<label className="label">
-											{errors.displayName &&
-											touched.displayName ? (
-												<ErrorField
-													error={errors.displayName}
-												/>
-											) : null}
-											{ApiErrors &&
-											ApiErrors.displayName &&
-											touched.displayName ? (
-												<ErrorField
-													error={
-														ApiErrors.displayName
-													}
 												/>
 											) : null}
 										</label>

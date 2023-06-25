@@ -15,7 +15,6 @@ interface EditProfileProps {}
 type UpdateValues = {
 	firstName: string | null;
 	lastName: string | null;
-	displayName: string | null;
 };
 
 const EditProfileForm: React.FC<EditProfileProps> = ({}) => {
@@ -30,14 +29,12 @@ const EditProfileForm: React.FC<EditProfileProps> = ({}) => {
 	updateValues = {
 		firstName: "",
 		lastName: "",
-		displayName: "",
 	};
 
 	if (user) {
 		updateValues = {
 			firstName: user.firstName,
 			lastName: user.lastName,
-			displayName: user.displayName,
 		};
 	}
 
@@ -50,10 +47,6 @@ const EditProfileForm: React.FC<EditProfileProps> = ({}) => {
 			.required("Last name cannot be empty or whitespace")
 			.min(3, "Last name must be between 3 and 50 characters long")
 			.max(50, "Last name must be between 3 and 50 characters long"),
-		displayName: Yup.string()
-			.required("Display name cannot be empty or whitespace")
-			.min(3, "Display name must be between 3 and 30 characters long")
-			.max(50, "Display name must be between 3 and 30 characters long"),
 	});
 
 	const submitUpdateForm = async (
@@ -71,7 +64,6 @@ const EditProfileForm: React.FC<EditProfileProps> = ({}) => {
 				setAPIResponse("");
 				setAPIErrors({});
 				helpers.setValues({
-					displayName: user.displayName,
 					firstName: user.firstName,
 					lastName: user.lastName,
 				});
@@ -183,40 +175,6 @@ const EditProfileForm: React.FC<EditProfileProps> = ({}) => {
 													<ErrorField
 														error={
 															ApiErrors.lastName
-														}
-													/>
-												) : null}
-											</label>
-										</div>
-									</div>
-									<div>
-										<div className="form-control">
-											<label className="label">
-												<span className="font-semibold label-text">
-													Display name
-												</span>
-											</label>
-											<Field
-												placeholder="Enter your nick name"
-												type="text"
-												name="displayName"
-												className={`w-full p-3 transition duration-200 rounded input`}
-											/>
-											<label className="label">
-												{errors.displayName &&
-												touched.displayName ? (
-													<ErrorField
-														error={
-															errors.displayName
-														}
-													/>
-												) : null}
-												{ApiErrors &&
-												ApiErrors.displayName &&
-												touched.displayName ? (
-													<ErrorField
-														error={
-															ApiErrors.displayName
 														}
 													/>
 												) : null}

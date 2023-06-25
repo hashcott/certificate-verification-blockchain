@@ -1,32 +1,67 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm'
+import { Column, Entity } from 'typeorm'
 
-import { AbstractEntity, User } from './'
-import { CertificationStatus, DegreeClassfication } from '../enums'
+import { AbstractEntity } from './'
+import { CertificationStatus, DegreeClassification } from '../enums'
 
 @Entity()
 export class Certification extends AbstractEntity<Certification> {
 	@Column({
-		name: 'organization_name',
-		nullable: false,
-		length: 256
+		length: 256,
+		name: 'firstName',
+		nullable: false
 	})
-	public organizationName: string
+	public firstName: string
 
 	@Column({
 		length: 256,
-		name: 'academic_year',
+		name: 'lastName',
+		nullable: false
+	})
+	public lastName: string
+
+	@Column({
+		length: 256,
+		name: 'studentCode',
+		nullable: false
+	})
+	public studentCode: string
+
+	@Column({
+		length: 256,
+		name: 'citizenIdentificationCode',
+		nullable: false
+	})
+	public citizenIdentificationCode: string
+
+	@Column({
+		length: 256,
+		name: 'birth',
+		nullable: false
+	})
+	public birth: string
+
+	@Column({
+		length: 256,
+		name: 'gender',
+		nullable: false
+	})
+	public gender: string
+
+	@Column({
+		length: 256,
+		name: 'academicYear',
 		nullable: false
 	})
 	public academicYear: string
 
 	@Column({
-		name: 'degree_classfication',
+		name: 'degreeClassification',
 		nullable: false,
 		type: 'enum',
-		default: DegreeClassfication.GOOD,
-		enum: DegreeClassfication
+		default: DegreeClassification.Good,
+		enum: DegreeClassification
 	})
-	public degreeClassfication: DegreeClassfication
+	public degreeClassification: DegreeClassification
 
 	@Column({
 		name: 'certification_status',
@@ -36,9 +71,6 @@ export class Certification extends AbstractEntity<Certification> {
 		enum: CertificationStatus
 	})
 	public certificationStatus: CertificationStatus
-
-	@OneToOne(() => User, (user) => user.certification, { cascade: ['insert'] })
-	public user: User
 
 	@Column({
 		name: 'is_verified_by_khoa',
