@@ -1,0 +1,1 @@
+insert into "local_file" ("created_at", "filename", "id", "mimetype", "path", "updated_at") values ('2023-06-25 16:39:52.493432', 'convertcsv (1).xlsx', 'b9f2cd77-f6e6-4446-9910-6609ddabe381', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'uploadedFiles/36ff7aa2e213a0743280aaff75c79767', '2023-06-25 16:39:52.493432');
