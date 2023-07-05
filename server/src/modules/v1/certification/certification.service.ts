@@ -164,12 +164,13 @@ export class CertificationService {
 
 	public async search(searchQuery: string) {
 		const cert = await this.certificationRepository.find({
-			where: [
-				{ citizenIdentificationCode: Like(`%${searchQuery}%`) },
-				{ studentCode: Like(`%${searchQuery}%`) },
-				{ firstName: Like(`%${searchQuery}%`) },
-				{ lastName: Like(`%${searchQuery}%`) }
-			],
+			where: {
+				citizenIdentificationCode: Like(`%${searchQuery}%`),
+				studentCode: Like(`%${searchQuery}%`),
+				firstName: Like(`%${searchQuery}%`),
+				lastName: Like(`%${searchQuery}%`),
+				certificationStatus: CertificationStatus.VERIFIED
+			},
 			take: 5
 		})
 		return cert
