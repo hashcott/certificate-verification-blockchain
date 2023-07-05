@@ -15,7 +15,7 @@ RUN pnpm install
 COPY . .
 RUN pnpm start --network sepolia
 
-CMD [  ]
+CMD [ "echo", "Hello" ]
 
 ################
 ## PRODUCTION ##
