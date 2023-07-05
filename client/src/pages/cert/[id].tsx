@@ -41,26 +41,28 @@ const Me: React.FC<MeProps> = ({}) => {
 							</label>
 						</span>
 						<div className="text-center text-white mb-12">
-							<h2 className="text-2xl font-bold">
+							<h2 className="lg:text-2xl sm:text-sm font-bold">
 								CỘNG HÒA XÃ HỘI CHỦ NGHĨA ...
 								<br />
 								Độc lập - Tự do - Hạnh phúc
 							</h2>
-							<h3 className="mt-5 text-xl font-bold">
+							<h3 className="mt-5 lg:text-xl sm:text-sm font-bold">
 								Bộ giáo dục và đào tạo ...
 								<br />
 								Trường đại học ...
 							</h3>
 							<p className="font-medium">cấp</p>
-							<h3 className="mt-5 text-xl font-bold">
+							<h3 className="mt-5 lg:text-xl sm:text-xs font-bold">
 								BẰNG KỸ SƯ
 							</h3>
 						</div>
-						<div className="pl-52 text-left text-white mb-12">
-							<h2 className="text-2xl font-semibold mt-2 mb-8">
+						<div className="lg:pl-52 lg:text-left text-white mb-12">
+							<h2 className="lg:text-2xl sm:text-xs font-semibold mt-2 mb-8">
 								{currentCert.firstName} {currentCert.lastName}
 							</h2>
-							<p className="font-medium">Hạng tốt nghiệp:</p>
+							<p className="sm:text-xs font-medium">
+								Hạng tốt nghiệp:
+							</p>
 							<h3 className="text-xl font-semibold mt-2 mb-4">
 								{currentCert.degreeClassification ===
 									DegreeClassification.Excellent &&
