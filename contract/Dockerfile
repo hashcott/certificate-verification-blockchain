@@ -13,9 +13,8 @@ RUN npm install -g truffle
 RUN pnpm install
 
 COPY . .
-RUN pnpm start --network sepolia
 
-CMD [ "echo", "Hello" ]
+CMD [ "pnpm", "start",'--network' , 'sepolia']
 
 ################
 ## PRODUCTION ##
