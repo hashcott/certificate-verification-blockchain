@@ -12,14 +12,18 @@ import QRCode from "react-qr-code";
 interface MeProps {}
 
 const Me: React.FC<MeProps> = ({}) => {
+	const router = useRouter();
+	const { query } = router;
+
 	const dispatch = useDispatch<Dispatch>();
 
 	let userState = useSelector((state: RootState) => state.user);
 	const { currentCert } = userState;
-	const router = useRouter();
 	useEffect(() => {
-		dispatch.user.getCert({ providerId: router.query.id });
-	}, []);
+		if (router.isReady) {
+			dispatch.user.getCert({ providerId: query.id });
+		}
+	}, [router.isReady]);
 
 	return (
 		<>
