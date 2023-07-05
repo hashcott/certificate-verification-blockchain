@@ -268,11 +268,9 @@ export const user = createModel<RootModel>()({
 		},
 		async getCert({ providerId }) {
 			try {
-				let { data } = await axios.get("/certification/getOne", {
-					params: {
-						providerId,
-					},
-				});
+				let { data } = await axios.get(
+					`/certification/getOne/${providerId}`
+				);
 				if (data) {
 					dispatch.user.SET_CURRENTCERT(data);
 				}

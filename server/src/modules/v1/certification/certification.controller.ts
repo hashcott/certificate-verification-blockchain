@@ -59,7 +59,7 @@ export class CertificationController {
 		return this.certificationervice.list()
 	}
 
-	@Get('getOne')
+	@Get('getOne/:providerId')
 	getOne(@Param('providerId') providerId: string) {
 		return this.certificationervice.getOne(providerId)
 	}

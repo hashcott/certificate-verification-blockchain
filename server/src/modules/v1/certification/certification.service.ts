@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 import { Certification, User } from '../../../common/entities'
-import { Repository, Like } from 'typeorm'
+import { Repository, Like, Equal } from 'typeorm'
 import { CertificationStatus, Position } from 'common/enums'
 import { InjectQueue } from '@nestjs/bull'
 import { Queue } from 'bull'
@@ -13,6 +13,7 @@ import { join } from 'path'
 import readXlsxFile from 'read-excel-file/node'
 import { LocalFilesService } from './localFiles.service'
 import { CertificationDto } from 'common/dtos'
+import { take } from 'rxjs'
 
 @Injectable()
 export class CertificationService {
@@ -178,8 +179,13 @@ export class CertificationService {
 
 	public async getOne(id: string) {
 		const cert = await this.certificationRepository.findOne({
-			where: { id }
+			where: {
+				studentCode: id,
+				certificationStatus: CertificationStatus.VERIFIED
+			}
 		})
+		console.log(cert)
+
 		return cert
 	}
 }

@@ -20,7 +20,6 @@ const Me: React.FC<MeProps> = ({}) => {
 	useEffect(() => {
 		dispatch.user.getCert({ providerId: router.query.id });
 	}, []);
-	console.log("=======================", process.env);
 
 	return (
 		<>
