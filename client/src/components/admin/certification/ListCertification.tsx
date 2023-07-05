@@ -50,14 +50,14 @@ const Certification: React.FC<CertificationProps> = ({}) => {
 	const dispatch = useDispatch<Dispatch>();
 
 	let userState = useSelector((state: RootState) => state.user);
-	const { user, authenticated, student } = userState;
+	const { user, authenticated, certifications } = userState;
 
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [globalFilter, setGlobalFilter] = useState("");
 	const table = useReactTable({
 		columns: certColumnDefs,
-		data: student,
+		data: certifications,
 		state: {
 			sorting,
 			columnFilters,
@@ -81,7 +81,7 @@ const Certification: React.FC<CertificationProps> = ({}) => {
 	const headers = table.getHeaderGroups();
 	const rows = table.getRowModel().rows;
 	const renderTable = () => {
-		if (student.length > 0) {
+		if (certifications.length > 0) {
 			return (
 				<>
 					<thead>
@@ -169,7 +169,7 @@ const Certification: React.FC<CertificationProps> = ({}) => {
 					placeholder="Search all columns..."
 				/>
 				<table className="table">{renderTable()}</table>
-				{student.length && <Pagination table={table} />}
+				{certifications.length && <Pagination table={table} />}
 			</div>
 		</>
 	);

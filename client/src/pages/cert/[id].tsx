@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { Container } from "../../components/Container";
 import { Dispatch, RootState } from "../../store/store";
 import { useEffect } from "react";
-import { DegreeClassfication } from "../../utils/types";
+import { DegreeClassification } from "../../utils/types";
 import { AiOutlineQrcode } from "react-icons/ai";
 import QRCode from "react-qr-code";
 
@@ -59,9 +59,17 @@ const Me: React.FC<MeProps> = ({}) => {
 							</h2>
 							<p className="font-medium">Hạng tốt nghiệp:</p>
 							<h3 className="text-xl font-semibold mt-2 mb-4">
-								{currentCert.certification
-									.degreeClassfication ===
-									DegreeClassfication.GOOD && "Giỏi"}
+								{currentCert.degreeClassification ===
+									DegreeClassification.Excellent &&
+									"Xuất sắc"}
+								{currentCert.degreeClassification ===
+									DegreeClassification.Good && "Giỏi"}{" "}
+								{currentCert.degreeClassification ===
+									DegreeClassification.FairlyGood &&
+									"Khá"}{" "}
+								{currentCert.degreeClassification ===
+									DegreeClassification.Average &&
+									"Trung Bình"}
 							</h3>
 							<p className="font-medium">Ngày cấp:</p>
 							<p className="text-lg mb-12">

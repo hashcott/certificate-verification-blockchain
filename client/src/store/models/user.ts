@@ -253,7 +253,7 @@ export const user = createModel<RootModel>()({
 		},
 		async search({ q }) {
 			try {
-				let { data } = await axios.get("/user/search", {
+				let { data } = await axios.get("/certification/search", {
 					params: {
 						q,
 					},

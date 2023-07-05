@@ -3,7 +3,7 @@ import Head from "next/head";
 import { Container } from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, RootState } from "../store/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface IndexProps {}
@@ -13,24 +13,26 @@ const Index: React.FC<IndexProps> = ({}) => {
 	const [query, setQuery] = useState("");
 
 	let userState = useSelector((state: RootState) => state.user);
-	const { certifications } = userState;
+	const { certificationsFound } = userState;
 	const handleSearch = (q: string) => {
 		setQuery(q);
 		dispatch.user.search({ q });
 	};
-
+	useEffect(() => {
+		dispatch.user.search({ q: "" });
+	}, []);
 	const renderCert = () => {
-		if (certifications && certifications.length === 0) {
+		if (certificationsFound && certificationsFound.length === 0) {
 			return;
 		}
-		return certifications?.map((user) => (
-			<Link href={`cert/${user.providerId}`}>
+		return certificationsFound?.map((user) => (
+			<Link href={`cert/${user.studentCode}`}>
 				<div
-					key={user.providerId}
+					key={user.studentCode}
 					className="w-full h-10 flex items-center gap-x-2 hover:bg-slate-400"
 				>
 					<p className="font-medium text-black text-base px-4">
-						{user.firstName} {user.lastName} - {user.providerId}
+						{user.firstName} {user.lastName} - {user.studentCode}
 					</p>
 				</div>
 			</Link>

@@ -69,4 +69,5 @@ export interface Certification {
 	isVerifiedByHT: boolean;
 	isVerifiedByTHUVIEN: boolean;
 	isVerifiedByKTX: boolean;
+	createdAt: string;
 }
