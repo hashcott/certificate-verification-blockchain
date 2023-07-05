@@ -7894,12 +7894,12 @@
     "11155111": {
       "events": {},
       "links": {},
-      "address": "0x9f2CD2e10bec519A3e9a788bC7FA502f61126731",
-      "transactionHash": "0x04828fcae6766d968ee11e63a1f245aaabf368c0c21000775fd23bf4b8df480c"
+      "address": "0x385F80232300e26b4b774b61569Db094A6F0CFC6",
+      "transactionHash": "0x8c0dad30b7a8addb5aa0a4e44e727a6491b3e2d058bb4cf1e05367541a1981a9"
     }
   },
   "schemaVersion": "3.4.14",
-  "updatedAt": "2023-06-25T18:30:48.241Z",
+  "updatedAt": "2023-07-05T13:03:54.512Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

@@ -1,13 +1,19 @@
+require("dotenv").config();
+const { REDIS } = process.env;
+
 const Queue = require("bull");
 const Certification = artifacts.require("Certification");
 
 const addCertificationQueue = new Queue("cert", {
-	redis: { port: 6379, host: "127.0.0.1" },
+	redis: { port: 6379, host: REDIS },
 });
 
 module.exports = async function () {
-	const certification = await Certification.deployed();
+	await addCertificationQueue.isReady();
+	console.log("Redis connected !");
 
+	const certification = await Certification.deployed();
+	console.log("Ready !!!");
 	addCertificationQueue.process(async function (job, done) {
 		console.log("Starting to save into blockchain");
 		const {

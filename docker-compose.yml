@@ -18,6 +18,23 @@ services:
     networks:
       - main-network
     restart: unless-stopped
+  contract:
+    container_name: contract
+    build:
+      dockerfile: Dockerfile
+      context: ./contract
+      target: development
+    env_file: ./contract/.env
+    volumes:
+      - ./contract:/harrynguyen/contract
+      - /harrynguyen/contract/node_modules/
+    command: pnpm start --network sepolia
+    depends_on:
+      - redis-main
+    networks:
+      - redis-network
+      - main-network
+    restart: unless-stopped
   server:
     container_name: server
     build:
@@ -33,7 +50,7 @@ services:
       - postgres-main
       - redis-main
     ports:
-      - 4001:4000
+      - 4001:4001
     networks:
       - main-network
     restart: unless-stopped
@@ -49,6 +66,7 @@ services:
       - /harrynguyen/workers/queues/node_modules/
     command: pnpm run start:debug
     depends_on:
+      - redis-main
       - server
     networks:
       - main-network

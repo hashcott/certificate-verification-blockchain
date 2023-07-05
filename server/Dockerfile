@@ -26,6 +26,6 @@ WORKDIR /harrynguyen/server
 
 COPY --from=development /harrynguyen/server .
 
-EXPOSE 4000
+EXPOSE 4001
 
 CMD [ "node", "dist/main" ]

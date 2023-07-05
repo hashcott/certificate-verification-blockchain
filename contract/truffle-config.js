@@ -11,13 +11,9 @@ module.exports = {
 			network_id: "*", // Any network (default: none)
 		},
 		sepolia: {
-			provider: () =>
-				new HDWalletProvider(
-					MNEMONIC,
-					`https://sepolia.infura.io/v3/${PROJECT_ID}`
-				),
-			network_id: 11155111,
-			confirmations: 1,
+			provider: () => new HDWalletProvider(MNEMONIC, PROJECT_ID),
+			network_id: "11155111",
+			networkCheckTimeout: 9999999,
 		},
 	},
 
@@ -25,7 +21,7 @@ module.exports = {
 	compilers: {
 		solc: {
 			version: "0.8.0", // Fetch exact version from solc-bin (default: truffle's version)
-			// docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
+			docker: true, // Use "0.5.1" you've installed locally with docker (default: false)
 			// settings: {          // See the solidity docs for advice about optimization and evmVersion
 			//  optimizer: {
 			//    enabled: false,

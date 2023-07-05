@@ -1,0 +1,1 @@
+INSERT INTO "public"."local_file" ("id","created_at","updated_at","filename","path","mimetype") VALUES ('b9f2cd77-f6e6-4446-9910-6609ddabe381','2023-06-25 16:39:52.493432','2023-06-25 16:39:52.493432','convertcsv (1).xlsx','uploadedFiles/36ff7aa2e213a0743280aaff75c79767','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
